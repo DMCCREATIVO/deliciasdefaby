@@ -1,0 +1,59 @@
+import { lazy, Suspense } from 'react'
+import { Routes, Route } from 'react-router-dom'
+import { AdminPanel } from "@/components/AdminPanel";
+import { Spinner } from '@/components/ui/spinner'
+
+const Dashboard = lazy(() => import('./admin/dashboard'))
+const Productos = lazy(() => import('./admin/productos'))
+const ActivarProductos = lazy(() => import('./admin/activar-productos'))
+const Pedidos = lazy(() => import('./admin/pedidos'))
+const Testimonios = lazy(() => import('./admin/testimonios'))
+const Categorias = lazy(() => import('./admin/Categorias'))
+const Blog = lazy(() => import('./admin/blog'))
+const BlogForm = lazy(() => import('./admin/blog/BlogForm'))
+const Configuracion = lazy(() => import('./admin/Configuracion'))
+const Clientes = lazy(() => import('./admin/Clientes'))
+const Horarios = lazy(() => import('./admin/Horarios'))
+const Colores = lazy(() => import('./admin/apariencia/Colores'))
+const Estadisticas = lazy(() => import('./admin/Estadisticas'))
+
+const Admin = () => {
+  return (
+    <div className="admin-page min-h-screen bg-gradient-to-br from-stone-50 via-white to-amber-50/30 w-full flex">
+      {/* Menú lateral sin separación */}
+      <div className="h-screen">
+        <AdminPanel />
+      </div>
+      {/* Contenido principal pegado al menú */}
+      <main className="flex-1 h-screen overflow-y-auto bg-gradient-to-br from-white via-stone-50/50 to-amber-50/20">
+        <div className="p-6">
+          <Suspense fallback={
+            <div className="flex items-center justify-center h-64">
+              <div className="flex flex-col items-center gap-4">
+                <Spinner className="w-8 h-8 text-amber-600" />
+                <p className="text-sm text-zinc-600 font-medium">Cargando...</p>
+              </div>
+            </div>
+          }>
+            <Routes>
+              <Route index element={<Dashboard />} />
+              <Route path="productos/*" element={<Productos />} />
+              <Route path="activar-productos" element={<ActivarProductos />} />
+              <Route path="pedidos/*" element={<Pedidos />} />
+              <Route path="testimonios/*" element={<Testimonios />} />
+              <Route path="categorias/*" element={<Categorias />} />
+              <Route path="blog/*" element={<Blog />} />
+              <Route path="configuracion/*" element={<Configuracion />} />
+              <Route path="clientes/*" element={<Clientes />} />
+              <Route path="horarios/*" element={<Horarios />} />
+              <Route path="apariencia/colores" element={<Colores />} />
+              <Route path="estadisticas/*" element={<Estadisticas />} />
+            </Routes>
+          </Suspense>
+        </div>
+      </main>
+    </div>
+  );
+};
+
+export default Admin;

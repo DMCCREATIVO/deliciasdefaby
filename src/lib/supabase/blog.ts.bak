@@ -1,0 +1,449 @@
+import { supabase } from "@/lib/supabase";
+import { BlogPost, BlogPostFilters, CreateBlogPostData, PaginatedBlogPosts, UpdateBlogPostData } from "@/types/blog";
+import { User } from "@supabase/supabase-js";
+
+export interface BlogPostFormValues {
+  title: string;
+  content: string;
+  excerpt: string;
+  image_url?: string;
+  is_published?: boolean;
+  featured?: boolean;
+  tags?: string[];
+}
+
+class BlogService {
+  private readonly POSTS_PER_PAGE = 10;
+
+  /**
+   * Obtiene una lista paginada de posts con filtros opcionales
+   */
+  async getPaginatedPosts(
+    page: number = 1,
+    filters: BlogPostFilters = {}
+  ): Promise<PaginatedBlogPosts> {
+    try {
+      let query = supabase
+        .from("blog_posts")
+        .select('*, author:profiles!blog_posts_author_id_fkey(id, name, avatar_url)', { count: 'exact' });
+
+      // Aplicar filtros
+      if (filters.isPublished !== undefined) {
+        query = query.eq('is_published', filters.isPublished);
+      }
+      if (filters.featured !== undefined) {
+        query = query.eq('featured', filters.featured);
+      }
+      if (filters.author) {
+        query = query.eq('author_id', filters.author);
+      }
+      if (filters.tag) {
+        query = query.contains('tags', [filters.tag]);
+      }
+      if (filters.searchTerm) {
+        query = query.or(`title.ilike.%${filters.searchTerm}%,content.ilike.%${filters.searchTerm}%`);
+      }
+
+      // Aplicar paginación
+      const start = (page - 1) * this.POSTS_PER_PAGE;
+      query = query
+        .order('created_at', { ascending: false })
+        .range(start, start + this.POSTS_PER_PAGE - 1);
+
+      const { data: posts, error, count } = await query;
+
+      if (error) throw error;
+
+      return {
+        posts: posts.map(post => this.enrichPost(post)),
+        total: count || 0,
+        page,
+        pageSize: this.POSTS_PER_PAGE,
+        hasMore: (count || 0) > (page * this.POSTS_PER_PAGE)
+      };
+    } catch (error) {
+      console.error("Error al obtener posts:", error);
+      throw error;
+    }
+  }
+
+  /**
+   * Obtiene un post por su ID con información del autor
+   */
+  async getById(id: string): Promise<BlogPost | null> {
+    try {
+      const { data: post, error } = await supabase
+        .from("blog_posts")
+        .select('*')
+        .eq("id", id)
+        .single();
+
+      if (error) throw error;
+      return post ? this.enrichPost(post) : null;
+    } catch (error) {
+      console.error("Error al obtener post:", error);
+      throw error;
+    }
+  }
+
+  /**
+   * Obtiene un post por su slug con información del autor
+   */
+  async getBySlug(slug: string): Promise<BlogPost | null> {
+    try {
+      console.log(`Buscando post con slug: ${slug}`);
+      
+      const { data: post, error } = await supabase
+        .from("blog_posts")
+        .select('*, author:profiles!blog_posts_author_id_fkey(id, name, avatar_url)')
+        .eq("slug", slug)
+        .single();
+
+      if (error) {
+        console.error("Error en getBySlug:", error.message, error.details);
+        throw error;
+      }
+      
+      console.log("Post encontrado:", post?.title || "No encontrado");
+      return post ? this.enrichPost(post) : null;
+    } catch (error) {
+      console.error("Error al obtener post por slug:", error);
+      // No propagar el error para manejar el caso de post no encontrado en el cliente
+      return null;
+    }
+  }
+
+  /**
+   * Crea un nuevo post
+   */
+  async create(postData: CreateBlogPostData): Promise<BlogPost> {
+    try {
+      const user = await this.ensureAuthenticated(true);
+      
+      // Procesar imagen si existe
+      const imageUrl = postData.image_url instanceof File 
+        ? await this.uploadImage(postData.image_url)
+        : postData.image_url;
+
+      const slug = this.generateSlug(postData.title);
+      
+      const { data: post, error } = await supabase
+        .from("blog_posts")
+        .insert({
+          title: postData.title,
+          content: postData.content,
+          excerpt: postData.excerpt || this.generateExcerpt(postData.content),
+          slug,
+          image_url: imageUrl,
+          author_id: user.id,
+          tags: postData.tags || [],
+          is_published: postData.is_published || false,
+          featured: postData.featured || false,
+          published_at: postData.is_published ? new Date().toISOString() : null
+        })
+        .select('*, author:profiles!blog_posts_author_id_fkey(id, name, avatar_url)')
+        .single();
+      
+      if (error) throw error;
+      return this.enrichPost(post);
+    } catch (error) {
+      console.error("Error al crear post:", error);
+      throw error;
+    }
+  }
+
+  /**
+   * Actualiza un post existente
+   */
+  async update(id: string, postData: UpdateBlogPostData): Promise<BlogPost> {
+    try {
+      await this.ensureAuthenticated(true);
+
+      // Si hay una nueva imagen, procesarla
+      let imageUrl = postData.image_url;
+      if (postData.image_url instanceof File) {
+        imageUrl = await this.uploadImage(postData.image_url);
+      }
+
+      const updateData: any = {
+        ...postData,
+        image_url: imageUrl,
+        updated_at: new Date().toISOString()
+      };
+
+      // Si se está publicando por primera vez, establecer published_at
+      if (postData.is_published) {
+        const currentPost = await this.getById(id);
+        if (!currentPost?.published_at) {
+          updateData.published_at = new Date().toISOString();
+        }
+      }
+
+      const { data: post, error } = await supabase
+        .from("blog_posts")
+        .update(updateData)
+        .eq("id", id)
+        .select('*, author:profiles!blog_posts_author_id_fkey(id, name, avatar_url)')
+        .single();
+
+      if (error) throw error;
+      return this.enrichPost(post);
+    } catch (error) {
+      console.error("Error al actualizar post:", error);
+      throw error;
+    }
+  }
+
+  /**
+   * Elimina un post y su imagen asociada
+   */
+  async delete(id: string): Promise<void> {
+    try {
+      await this.ensureAuthenticated(true);
+      
+      // Obtener la URL de la imagen antes de eliminar
+      const post = await this.getById(id);
+      
+      const { error } = await supabase
+        .from("blog_posts")
+        .delete()
+        .eq("id", id);
+
+      if (error) throw error;
+
+      // Si había una imagen, eliminarla del storage
+      if (post?.image_url) {
+        await this.deleteImage(post.image_url);
+      }
+    } catch (error) {
+      console.error("Error al eliminar post:", error);
+      throw error;
+    }
+  }
+
+  /**
+   * Sube una imagen al storage
+   */
+  private async uploadImage(file: File): Promise<string> {
+    try {
+      const fileExt = file.name.split('.').pop();
+      const fileName = `${Date.now()}.${fileExt}`;
+      const filePath = `blog/${fileName}`;
+
+      const { error: uploadError, data } = await supabase.storage
+        .from('public')
+        .upload(filePath, file);
+
+      if (uploadError) throw uploadError;
+
+      const { data: { publicUrl } } = supabase.storage
+        .from('public')
+        .getPublicUrl(filePath);
+
+      return publicUrl;
+    } catch (error) {
+      console.error("Error al subir imagen:", error);
+      throw error;
+    }
+  }
+
+  /**
+   * Elimina una imagen del storage
+   */
+  private async deleteImage(imageUrl: string): Promise<void> {
+    try {
+      const path = imageUrl.split('/').pop();
+      if (!path) return;
+
+      const { error } = await supabase.storage
+        .from('public')
+        .remove([`blog/${path}`]);
+
+      if (error) throw error;
+    } catch (error) {
+      console.error("Error al eliminar imagen:", error);
+      throw error;
+    }
+  }
+
+  /**
+   * Verifica la autenticación y permisos del usuario
+   */
+  private async ensureAuthenticated(requireAdmin: boolean = false): Promise<User> {
+    const { data: { session }, error: sessionError } = await supabase.auth.getSession();
+    
+    if (sessionError || !session) {
+      throw new Error('Debes iniciar sesión para realizar esta acción');
+    }
+    
+    if (requireAdmin) {
+      const { data: profile, error: profileError } = await supabase
+        .from('profiles')
+        .select('role')
+        .eq('user_id', session.user.id)
+        .single();
+      
+      if (profileError || profile?.role !== 'admin') {
+        throw new Error('Necesitas permisos de administrador para realizar esta acción');
+      }
+    }
+    
+    return session.user;
+  }
+
+  /**
+   * Genera un slug a partir del título
+   */
+  private generateSlug(title: string): string {
+    return title
+      .toLowerCase()
+      .normalize('NFD')
+      .replace(/[\u0300-\u036f]/g, '')
+      .replace(/[^a-z0-9]+/g, '-')
+      .replace(/(^-|-$)+/g, '');
+  }
+
+  /**
+   * Genera un extracto a partir del contenido
+   */
+  private generateExcerpt(content: string, maxLength: number = 160): string {
+    const plainText = content
+      .replace(/<[^>]+>/g, '') // Eliminar HTML tags
+      .replace(/\s+/g, ' ') // Normalizar espacios
+      .trim();
+    
+    return plainText.length > maxLength
+      ? plainText.substring(0, maxLength) + '...'
+      : plainText;
+  }
+
+  /**
+   * Enriquece un post con información adicional
+   */
+  private enrichPost(post: any): BlogPost {
+    return {
+        ...post,
+      readingTime: this.calculateReadingTime(post.content),
+      formattedDate: new Date(post.created_at).toLocaleDateString('es-ES', {
+        year: 'numeric',
+        month: 'long',
+        day: 'numeric'
+      })
+    };
+  }
+
+  /**
+   * Calcula el tiempo estimado de lectura
+   */
+  private calculateReadingTime(content: string): number {
+    const wordsPerMinute = 200;
+    const wordCount = content
+      .replace(/<[^>]+>/g, '') // Eliminar HTML tags
+      .split(/\s+/)
+      .length;
+    
+    return Math.ceil(wordCount / wordsPerMinute);
+  }
+
+  // Obtener todos los posts publicados
+  async getAll(): Promise<BlogPost[]> {
+    try {
+      console.log("Consultando posts en getAll");
+      const { data, error } = await supabase
+        .from("blog_posts")
+        .select('*, author:profiles!blog_posts_author_id_fkey(id, name, avatar_url)')
+        .eq("is_published", true)
+        .order("created_at", { ascending: false });
+      
+      if (error) {
+        console.error("Error en getAll:", error.message, error.details);
+        throw error;
+      }
+      
+      console.log("Posts obtenidos:", data?.length || 0);
+      
+      // Enriquecer los posts con información adicional
+      return data ? data.map(post => this.enrichPost(post)) : [];
+    } catch (error) {
+      console.error("Error al obtener posts:", error);
+      return []; // Retornar un array vacío en caso de error
+    }
+  }
+
+  // Obtener todos los posts para administración (publicados y borradores)
+  async getAllAdmin(): Promise<BlogPost[]> {
+    try {
+      console.log("Consultando posts para administración");
+      const { data, error } = await supabase
+        .from("blog_posts")
+        .select('*, author:profiles!blog_posts_author_id_fkey(id, name, avatar_url)')
+        .order("created_at", { ascending: false });
+      
+      if (error) {
+        console.error("Error en getAllAdmin:", error.message, error.details);
+        throw error;
+      }
+      
+      console.log("Posts de admin obtenidos:", data?.length || 0);
+      
+      // Enriquecer los posts con información adicional
+      return data ? data.map(post => this.enrichPost(post)) : [];
+    } catch (error) {
+      console.error("Error al obtener posts para admin:", error);
+      return []; // Retornar un array vacío en caso de error
+    }
+  }
+
+  // Obtener posts con sus autores
+  async getAllWithAuthors(): Promise<BlogPost[]> {
+    try {
+      const { data, error } = await supabase
+        .from("blog_posts")
+        .select('*, author:profiles!blog_posts_author_id_fkey(id, name, avatar_url)')
+        .eq("is_published", true)
+        .order("created_at", { ascending: false });
+      
+      if (error) throw error;
+      return data || [];
+    } catch (error) {
+      console.error("Error al obtener posts con autores:", error);
+      throw error;
+    }
+  }
+
+  // Verificar estructura de la base de datos
+  async checkDatabaseStructure(): Promise<void> {
+    try {
+      console.log("Verificando estructura de la base de datos...");
+      
+      // Intentar obtener la información del esquema de la tabla blog_posts
+      const { data: tableInfo, error: tableError } = await supabase
+        .from('blog_posts')
+        .select('id')
+        .limit(1);
+      
+      if (tableError) {
+        console.error("Error al acceder a la tabla blog_posts:", tableError.message);
+        throw tableError;
+      }
+      
+      console.log("La tabla blog_posts existe y es accesible");
+      
+      // Obtener la lista de tablas
+      const { data: tables, error: tablesError } = await supabase
+        .rpc('get_tables');
+      
+      if (tablesError) {
+        console.error("Error al obtener lista de tablas:", tablesError.message);
+      } else {
+        console.log("Tablas disponibles:", tables);
+      }
+      
+    } catch (error) {
+      console.error("Error al verificar estructura:", error);
+      throw error;
+    }
+  }
+}
+
+export const blogService = new BlogService(); 

@@ -1,0 +1,508 @@
+/* Sobrescribir estilos problemáticos del panel admin */
+
+/* 🎨 NUEVA PALETA DE COLORES MEJORADA PARA PANEL ADMIN */
+/* Diseñada para máxima legibilidad y contraste */
+
+:root {
+  /* Colores principales mejorados */
+  --admin-primary: #c2410c;        /* Orange-700 - más suave */
+  --admin-primary-light: #ea580c;  /* Orange-600 */
+  --admin-primary-dark: #9a3412;   /* Orange-800 */
+  
+  /* Fondos principales */
+  --admin-bg-main: #fefefe;        /* Blanco casi puro */
+  --admin-bg-card: #ffffff;        /* Blanco puro para cards */
+  --admin-bg-hover: #f8fafc;       /* Slate-50 muy sutil */
+  --admin-bg-accent: #fff7ed;      /* Orange-50 muy sutil */
+  
+  /* Texto mejorado para máximo contraste */
+  --admin-text-primary: #0f172a;   /* Slate-900 - negro azulado */
+  --admin-text-secondary: #334155; /* Slate-700 */
+  --admin-text-muted: #64748b;     /* Slate-500 */
+  --admin-text-light: #94a3b8;     /* Slate-400 */
+  
+  /* Bordes y separadores */
+  --admin-border: #e2e8f0;         /* Slate-200 */
+  --admin-border-light: #f1f5f9;   /* Slate-100 */
+  
+  /* Estados de color */
+  --admin-success: #059669;        /* Emerald-600 */
+  --admin-success-bg: #ecfdf5;     /* Emerald-50 */
+  --admin-warning: #d97706;        /* Amber-600 */
+  --admin-warning-bg: #fffbeb;     /* Amber-50 */
+  --admin-error: #dc2626;          /* Red-600 */
+  --admin-error-bg: #fef2f2;       /* Red-50 */
+  --admin-info: #2563eb;           /* Blue-600 */
+  --admin-info-bg: #eff6ff;        /* Blue-50 */
+}
+
+/* 🔧 CONFIGURACIÓN GLOBAL DEL PANEL ADMIN */
+.admin-page {
+  background: linear-gradient(135deg, 
+    var(--admin-bg-main) 0%, 
+    var(--admin-bg-hover) 50%, 
+    var(--admin-bg-accent) 100%) !important;
+  color: var(--admin-text-primary) !important;
+  min-height: 100vh;
+}
+
+/* 📋 CARDS Y CONTENEDORES MEJORADOS */
+.admin-page .bg-zinc-900,
+.admin-page .bg-zinc-800,
+.admin-page .bg-slate-900,
+.admin-page .bg-slate-800 {
+  background-color: var(--admin-bg-card) !important;
+  border: 1px solid var(--admin-border) !important;
+  border-radius: 12px !important;
+  box-shadow: 0 1px 3px 0 rgb(0 0 0 / 0.1), 0 1px 2px -1px rgb(0 0 0 / 0.1) !important;
+  color: var(--admin-text-primary) !important;
+}
+
+/* 📝 TEXTO Y TIPOGRAFÍA */
+.admin-page .text-white {
+  color: var(--admin-text-primary) !important;
+}
+
+.admin-page .text-zinc-400,
+.admin-page .text-slate-400,
+.admin-page .text-gray-400 {
+  color: var(--admin-text-muted) !important;
+}
+
+.admin-page .text-zinc-300,
+.admin-page .text-slate-300,
+.admin-page .text-gray-300 {
+  color: var(--admin-text-light) !important;
+}
+
+/* 🏷️ TÍTULOS Y HEADERS */
+.admin-page h1,
+.admin-page h2,
+.admin-page h3,
+.admin-page h4,
+.admin-page h5,
+.admin-page h6 {
+  color: var(--admin-text-primary) !important;
+  font-weight: 600 !important;
+}
+
+/* 🏷️ LABELS Y ETIQUETAS */
+.admin-page label {
+  color: var(--admin-text-secondary) !important;
+  font-weight: 500 !important;
+}
+
+/* 📝 INPUTS Y FORMULARIOS MEJORADOS */
+.admin-page input,
+.admin-page textarea,
+.admin-page select {
+  background-color: var(--admin-bg-card) !important;
+  color: var(--admin-text-primary) !important;
+  border: 1px solid var(--admin-border) !important;
+  border-radius: 8px !important;
+  padding: 0.75rem !important;
+  transition: all 0.2s ease !important;
+}
+
+.admin-page input:focus,
+.admin-page textarea:focus,
+.admin-page select:focus {
+  border-color: var(--admin-primary) !important;
+  box-shadow: 0 0 0 3px rgb(194 65 12 / 0.1) !important;
+  outline: none !important;
+}
+
+.admin-page .bg-zinc-800,
+.admin-page .bg-zinc-700,
+.admin-page .bg-slate-800,
+.admin-page .bg-slate-700 {
+  background-color: var(--admin-bg-card) !important;
+}
+
+.admin-page .border-zinc-800,
+.admin-page .border-zinc-700,
+.admin-page .border-slate-800,
+.admin-page .border-slate-700 {
+  border-color: var(--admin-border) !important;
+}
+
+/* 🎯 BADGES Y ESTADOS MEJORADOS */
+.admin-page .bg-brand-pink,
+.admin-page .bg-green-500 {
+  background-color: var(--admin-success-bg) !important;
+  color: var(--admin-success) !important;
+  border: 1px solid var(--admin-success) !important;
+  padding: 0.25rem 0.75rem !important;
+  border-radius: 9999px !important;
+  font-size: 0.75rem !important;
+  font-weight: 600 !important;
+}
+
+.admin-page .bg-yellow-500 {
+  background-color: var(--admin-warning-bg) !important;
+  color: var(--admin-warning) !important;
+  border: 1px solid var(--admin-warning) !important;
+}
+
+.admin-page .bg-red-500 {
+  background-color: var(--admin-error-bg) !important;
+  color: var(--admin-error) !important;
+  border: 1px solid var(--admin-error) !important;
+}
+
+.admin-page .bg-blue-500 {
+  background-color: var(--admin-info-bg) !important;
+  color: var(--admin-info) !important;
+  border: 1px solid var(--admin-info) !important;
+}
+
+/* 🔘 BOTONES MEJORADOS */
+.admin-page button {
+  transition: all 0.2s ease !important;
+  border-radius: 8px !important;
+  font-weight: 500 !important;
+}
+
+.admin-page .bg-orange-500,
+.admin-page .bg-amber-500 {
+  background: linear-gradient(135deg, var(--admin-primary), var(--admin-primary-light)) !important;
+  color: white !important;
+  border: none !important;
+  box-shadow: 0 1px 3px 0 rgb(0 0 0 / 0.1) !important;
+}
+
+.admin-page .bg-orange-500:hover,
+.admin-page .bg-amber-500:hover {
+  background: linear-gradient(135deg, var(--admin-primary-dark), var(--admin-primary)) !important;
+  transform: translateY(-1px) !important;
+  box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1) !important;
+}
+
+/* 📊 MODALES Y POPUPS */
+.admin-page [role="dialog"],
+.admin-page [role="alertdialog"] {
+  background-color: var(--admin-bg-card) !important;
+  color: var(--admin-text-primary) !important;
+  border: 1px solid var(--admin-border) !important;
+  border-radius: 12px !important;
+  box-shadow: 0 20px 25px -5px rgb(0 0 0 / 0.1), 0 8px 10px -6px rgb(0 0 0 / 0.1) !important;
+}
+
+.admin-page [data-radix-popper-content-wrapper] {
+  background-color: var(--admin-bg-card) !important;
+  border: 1px solid var(--admin-border) !important;
+  border-radius: 8px !important;
+  box-shadow: 0 10px 15px -3px rgb(0 0 0 / 0.1) !important;
+}
+
+/* 📋 TABLAS MEJORADAS */
+.admin-page table {
+  background-color: var(--admin-bg-card) !important;
+  border-radius: 8px !important;
+  overflow: hidden !important;
+  border: 1px solid var(--admin-border) !important;
+}
+
+.admin-page table th {
+  background-color: var(--admin-bg-hover) !important;
+  color: var(--admin-text-primary) !important;
+  font-weight: 600 !important;
+  padding: 1rem !important;
+  border-bottom: 1px solid var(--admin-border) !important;
+}
+
+.admin-page table td {
+  color: var(--admin-text-secondary) !important;
+  padding: 0.75rem 1rem !important;
+  border-bottom: 1px solid var(--admin-border-light) !important;
+}
+
+.admin-page table tr:hover {
+  background-color: var(--admin-bg-hover) !important;
+}
+
+/* 📊 GRÁFICOS Y CHARTS */
+.admin-page .recharts-tooltip-wrapper {
+  background-color: var(--admin-bg-card) !important;
+  border: 1px solid var(--admin-border) !important;
+  border-radius: 8px !important;
+  box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1) !important;
+  color: var(--admin-text-primary) !important;
+}
+
+.admin-page .recharts-tooltip-label {
+  color: var(--admin-text-primary) !important;
+}
+
+.admin-page .recharts-tooltip-item {
+  color: var(--admin-text-secondary) !important;
+}
+
+/* 🔄 LOADING Y SPINNER */
+.admin-page .animate-spin {
+  color: var(--admin-primary) !important;
+}
+
+/* 📱 TABS MEJORADAS */
+.admin-page [role="tablist"] {
+  background-color: var(--admin-bg-hover) !important;
+  border-radius: 8px !important;
+  padding: 0.25rem !important;
+}
+
+.admin-page [role="tab"] {
+  color: var(--admin-text-muted) !important;
+  border-radius: 6px !important;
+  transition: all 0.2s ease !important;
+}
+
+.admin-page [role="tab"][data-state="active"] {
+  background-color: var(--admin-bg-card) !important;
+  color: var(--admin-text-primary) !important;
+  box-shadow: 0 1px 3px 0 rgb(0 0 0 / 0.1) !important;
+}
+
+/* 🎨 CLASSES UTILITARIAS ESPECÍFICAS */
+.admin-improved-card {
+  background-color: var(--admin-bg-card) !important;
+  border: 1px solid var(--admin-border) !important;
+  border-radius: 12px !important;
+  box-shadow: 0 1px 3px 0 rgb(0 0 0 / 0.1) !important;
+  color: var(--admin-text-primary) !important;
+  padding: 1.5rem !important;
+  transition: all 0.2s ease !important;
+}
+
+.admin-improved-card:hover {
+  box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1) !important;
+  transform: translateY(-1px) !important;
+}
+
+.admin-improved-text {
+  color: var(--admin-text-primary) !important;
+}
+
+.admin-improved-text-muted {
+  color: var(--admin-text-muted) !important;
+}
+
+.admin-improved-border {
+  border-color: var(--admin-border) !important;
+}
+
+/* 🔧 SELECTORES ESPECÍFICOS PARA SHADCN COMPONENTS */
+.admin-page .bg-muted {
+  background-color: var(--admin-bg-hover) !important;
+}
+
+.admin-page .text-muted-foreground {
+  color: var(--admin-text-muted) !important;
+}
+
+.admin-page .border-border {
+  border-color: var(--admin-border) !important;
+}
+
+.admin-page .bg-background {
+  background-color: var(--admin-bg-card) !important;
+}
+
+.admin-page .text-foreground {
+  color: var(--admin-text-primary) !important;
+}
+
+/* 🎭 ANIMACIONES SUAVES */
+.admin-page * {
+  transition: background-color 0.2s ease, color 0.2s ease, border-color 0.2s ease !important;
+}
+
+/* 📋 FORMULARIOS DE PRODUCTOS - SCROLL MEJORADO */
+.admin-page .product-form-scroll {
+  scrollbar-width: thin;
+  scrollbar-color: rgba(156, 163, 175, 0.5) transparent;
+}
+
+.admin-page .product-form-scroll::-webkit-scrollbar {
+  width: 6px;
+}
+
+.admin-page .product-form-scroll::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.admin-page .product-form-scroll::-webkit-scrollbar-thumb {
+  background-color: rgba(156, 163, 175, 0.5);
+  border-radius: 3px;
+}
+
+.admin-page .product-form-scroll::-webkit-scrollbar-thumb:hover {
+  background-color: rgba(156, 163, 175, 0.7);
+}
+
+/* 📝 INPUTS ESPECÍFICOS PARA FORMULARIOS */
+.admin-input {
+  background-color: var(--admin-bg-card) !important;
+  border: 1px solid var(--admin-border) !important;
+  border-radius: 8px !important;
+  color: var(--admin-text-primary) !important;
+  padding: 0.75rem !important;
+  transition: all 0.2s ease !important;
+}
+
+.admin-input:focus {
+  border-color: var(--admin-primary) !important;
+  box-shadow: 0 0 0 3px rgb(194 65 12 / 0.1) !important;
+  outline: none !important;
+}
+
+.admin-input::placeholder {
+  color: var(--admin-text-muted) !important;
+}
+
+/* 🖼️ GALERÍA DE IMÁGENES MEJORADA */
+.admin-page .image-gallery-item {
+  transition: all 0.2s ease !important;
+  border: 1px solid var(--admin-border) !important;
+  border-radius: 8px !important;
+  overflow: hidden !important;
+}
+
+.admin-page .image-gallery-item:hover {
+  transform: scale(1.02) !important;
+  box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1) !important;
+}
+
+/* 📱 RESPONSIVE IMPROVEMENTS */
+@media (max-width: 768px) {
+  .admin-page {
+    padding: 1rem !important;
+  }
+  
+  .admin-improved-card {
+    padding: 1rem !important;
+  }
+  
+  .admin-page .product-form-scroll {
+    height: 50vh !important;
+  }
+}
+
+/* 🌙 SOPORTE PARA MODO OSCURO (OPCIONAL) */
+@media (prefers-color-scheme: dark) {
+  .admin-page[data-theme="auto"] {
+    --admin-bg-main: #0f172a;
+    --admin-bg-card: #1e293b;
+    --admin-text-primary: #f8fafc;
+    --admin-text-secondary: #cbd5e1;
+  }
+}
+
+/* 🎯 MEJORAS ADICIONALES PARA MEJOR UX */
+.admin-page .focus\:ring-2:focus {
+  ring-color: var(--admin-primary) !important;
+  ring-opacity: 0.2 !important;
+}
+
+.admin-page .hover\:bg-accent:hover {
+  background-color: var(--admin-bg-hover) !important;
+}
+
+/* ✨ EFECTOS VISUALES MEJORADOS */
+.admin-page .shadow-lg {
+  box-shadow: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -2px rgb(0 0 0 / 0.05) !important;
+}
+
+.admin-page .shadow-md {
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06) !important;
+}
+
+/* Estilos para el formulario de productos - Responsivo */
+.product-form-scroll {
+  scrollbar-width: thin;
+  scrollbar-color: rgba(156, 163, 175, 0.5) transparent;
+}
+
+.product-form-scroll::-webkit-scrollbar {
+  width: 6px;
+}
+
+.product-form-scroll::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.product-form-scroll::-webkit-scrollbar-thumb {
+  background-color: rgba(156, 163, 175, 0.5);
+  border-radius: 3px;
+}
+
+.product-form-scroll::-webkit-scrollbar-thumb:hover {
+  background-color: rgba(156, 163, 175, 0.7);
+}
+
+/* Ajustes para dispositivos móviles */
+@media (max-width: 640px) {
+  .product-form-scroll {
+    padding-right: 8px !important;
+  }
+  
+  /* Mejor espaciado en formularios móviles */
+  .space-y-4 > * + * {
+    margin-top: 1rem !important;
+  }
+  
+  .space-y-6 > * + * {
+    margin-top: 1.5rem !important;
+  }
+  
+  /* Inputs más grandes en móvil */
+  input[type="text"],
+  input[type="number"],
+  input[type="url"],
+  textarea,
+  select {
+    min-height: 44px !important;
+    font-size: 16px !important; /* Previene zoom en iOS */
+  }
+  
+  /* Botones más grandes en móvil */
+  button {
+    min-height: 44px !important;
+  }
+}
+
+/* Ajustes para tablets */
+@media (min-width: 641px) and (max-width: 1024px) {
+  .product-form-scroll {
+    padding-right: 12px !important;
+  }
+}
+
+/* Mejor contraste para labels */
+.text-gray-700 {
+  color: rgb(55, 65, 81) !important;
+}
+
+/* Mejor focus para accesibilidad */
+input:focus,
+textarea:focus,
+select:focus,
+button:focus {
+  outline: 2px solid rgb(251, 146, 60) !important;
+  outline-offset: 2px !important;
+}
+
+/* Animaciones suaves */
+.transition-colors {
+  transition-property: color, background-color, border-color !important;
+  transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1) !important;
+  transition-duration: 150ms !important;
+}
+
+/* Mejores sombras para cards */
+.shadow-md {
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06) !important;
+}
+
+.shadow-lg {
+  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05) !important;
+} 

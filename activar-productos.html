@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Activar Productos - Delicias de Faby</title>
+  <script src="https://cdn.jsdelivr.net/npm/pocketbase@0.21.1/dist/pocketbase.umd.js"></script>
+  <style>
+    body {
+      font-family: system-ui, -apple-system, sans-serif;
+      max-width: 800px;
+      margin: 50px auto;
+      padding: 20px;
+      background: #f5f5f5;
+    }
+    .container {
+      background: white;
+      padding: 30px;
+      border-radius: 10px;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    }
+    h1 {
+      color: #333;
+      margin-bottom: 20px;
+    }
+    button {
+      background: #ff6b35;
+      color: white;
+      border: none;
+      padding: 12px 24px;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 16px;
+      margin: 10px 5px;
+    }
+    button:hover {
+      background: #ff5722;
+    }
+    button:disabled {
+      background: #ccc;
+      cursor: not-allowed;
+    }
+    #log {
+      background: #f8f8f8;
+      padding: 15px;
+      border-radius: 6px;
+      margin-top: 20px;
+      font-family: monospace;
+      font-size: 14px;
+      max-height: 400px;
+      overflow-y: auto;
+    }
+    .log-line {
+      margin: 5px 0;
+    }
+    .success { color: #4caf50; }
+    .error { color: #f44336; }
+    .info { color: #2196f3; }
+    .warning { color: #ff9800; }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>🍞 Activar Productos - Delicias de Faby</h1>
+    <p>Esta herramienta activa todos los productos en PocketBase para que sean visibles en el sitio web.</p>
+    
+    <div>
+      <button onclick="listarProductos()">📋 Listar Productos</button>
+      <button onclick="activarTodos()">✅ Activar Todos</button>
+      <button onclick="destacarAlgunos()">⭐ Destacar Algunos</button>
+      <button onclick="limpiarLog()">🗑️ Limpiar Log</button>
+    </div>
+    
+    <div id="log"></div>
+  </div>
+
+  <script>
+    const POCKETBASE_URL = 'https://clientes-pocketbasedeliciasdefaby.4dgggl.easypanel.host';
+    const pb = new PocketBase(POCKETBASE_URL);
+    
+    function log(message, type = 'info') {
+      const logDiv = document.getElementById('log');
+      const line = document.createElement('div');
+      line.className = `log-line ${type}`;
+      line.textContent = message;
+      logDiv.appendChild(line);
+      logDiv.scrollTop = logDiv.scrollHeight;
+    }
+    
+    function limpiarLog() {
+      document.getElementById('log').innerHTML = '';
+    }
+    
+    async function listarProductos() {
+      try {
+        log('🔍 Conectando a PocketBase...', 'info');
+        log(`📡 URL: ${POCKETBASE_URL}`, 'info');
+        
+        const productos = await pb.collection('products').getFullList({
+          sort: '-created',
+        });
+        
+        log(`✅ Se encontraron ${productos.length} productos`, 'success');
+        log('', 'info');
+        
+        const activos = productos.filter(p => p.is_active).length;
+        const inactivos = productos.filter(p => !p.is_active).length;
+        const destacados = productos.filter(p => p.is_featured).length;
+        
+        log(`📊 Estadísticas:`, 'info');
+        log(`   Total: ${productos.length}`, 'info');
+        log(`   Activos: ${activos}`, activos > 0 ? 'success' : 'warning');
+        log(`   Inactivos: ${inactivos}`, inactivos > 0 ? 'warning' : 'success');
+        log(`   Destacados: ${destacados}`, 'info');
+        log('', 'info');
+        
+        log('📝 Primeros 10 productos:', 'info');
+        productos.slice(0, 10).forEach((p, i) => {
+          const estado = p.is_active ? '✅' : '❌';
+          const destacado = p.is_featured ? '⭐' : '  ';
+          log(`   ${i + 1}. ${destacado} ${estado} ${p.title} - $${p.price}`, 'info');
+        });
+        
+      } catch (error) {
+        log(`❌ Error: ${error.message}`, 'error');
+        console.error(error);
+      }
+    }
+    
+    async function activarTodos() {
+      try {
+        log('🔄 Iniciando activación de productos...', 'info');
+        
+        const productos = await pb.collection('products').getFullList();
+        log(`📦 Encontrados ${productos.length} productos`, 'info');
+        
+        let activados = 0;
+        let yaActivos = 0;
+        let errores = 0;
+        
+        for (const producto of productos) {
+          if (!producto.is_active) {
+            try {
+              await pb.collection('products').update(producto.id, {
+                is_active: true,
+              });
+              log(`   ✅ Activado: ${producto.title}`, 'success');
+              activados++;
+            } catch (error) {
+              log(`   ❌ Error en ${producto.title}: ${error.message}`, 'error');
+              errores++;
+            }
+          } else {
+            yaActivos++;
+          }
+        }
+        
+        log('', 'info');
+        log('📊 Resumen:', 'info');
+        log(`   Productos activados: ${activados}`, 'success');
+        log(`   Ya estaban activos: ${yaActivos}`, 'info');
+        log(`   Errores: ${errores}`, errores > 0 ? 'error' : 'success');
+        log('✨ ¡Proceso completado!', 'success');
+        
+      } catch (error) {
+        log(`❌ Error: ${error.message}`, 'error');
+        console.error(error);
+      }
+    }
+    
+    async function destacarAlgunos() {
+      try {
+        log('⭐ Destacando productos...', 'info');
+        
+        const productos = await pb.collection('products').getFullList({
+          sort: '-created',
+        });
+        
+        // Destacar los primeros 5 productos
+        const paraDestacar = productos.slice(0, 5);
+        
+        let destacados = 0;
+        for (const producto of paraDestacar) {
+          try {
+            await pb.collection('products').update(producto.id, {
+              is_active: true,
+              is_featured: true,
+            });
+            log(`   ⭐ Destacado: ${producto.title}`, 'success');
+            destacados++;
+          } catch (error) {
+            log(`   ❌ Error: ${error.message}`, 'error');
+          }
+        }
+        
+        log(`✨ ${destacados} productos destacados`, 'success');
+        
+      } catch (error) {
+        log(`❌ Error: ${error.message}`, 'error');
+        console.error(error);
+      }
+    }
+    
+    // Cargar productos al inicio
+    window.addEventListener('load', () => {
+      log('🚀 Herramienta de activación de productos cargada', 'success');
+      log('👆 Haz clic en "Listar Productos" para ver el estado actual', 'info');
+    });
+  </script>
+</body>
+</html>

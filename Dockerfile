@@ -20,19 +20,25 @@ ENV VITE_BACKEND=pocketbase
 RUN npm run build
 
 # ── Etapa 2: Servidor Nginx ──────────────────────────────────────
-FROM nginx:alpine AS production
+FROM nginx:stable-alpine AS production
+
+# Instalar curl para healthcheck (wget no está disponible en alpine)
+RUN apk add --no-cache curl
+
+# Eliminar configuración default de nginx
+RUN rm /etc/nginx/conf.d/default.conf
 
 # Copiar la build al directorio de Nginx
 COPY --from=builder /app/dist /usr/share/nginx/html
 
-# Copiar configuración de Nginx
+# Copiar configuración de Nginx como conf.d para evitar conflictos con envsubst
 COPY nginx.conf /etc/nginx/nginx.conf
 
 # Puerto expuesto
 EXPOSE 80
 
-# Healthcheck
-HEALTHCHECK --interval=30s --timeout=3s \
-  CMD wget -qO- http://localhost/ || exit 1
+# Healthcheck usando curl
+HEALTHCHECK --interval=30s --timeout=3s --start-period=10s --retries=3 \
+  CMD curl -fs http://localhost/health || exit 1
 
 CMD ["nginx", "-g", "daemon off;"]

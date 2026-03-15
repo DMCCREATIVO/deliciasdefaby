@@ -10,16 +10,11 @@ RUN npm ci --prefer-offline
 # Copiar código fuente
 COPY . .
 
-# Variables de entorno para el build (se inyectan en build time)
-ARG VITE_POCKETBASE_URL
-ARG VITE_APP_NAME
-ARG VITE_APP_URL
-ARG VITE_BACKEND=pocketbase
-
-ENV VITE_POCKETBASE_URL=$VITE_POCKETBASE_URL
-ENV VITE_APP_NAME=$VITE_APP_NAME
-ENV VITE_APP_URL=$VITE_APP_URL
-ENV VITE_BACKEND=$VITE_BACKEND
+# Variables de entorno para el build (hardcoded para producción)
+ENV VITE_POCKETBASE_URL=https://clientes-pocketbasedeliciasdefaby.4dgggl.easypanel.host
+ENV VITE_APP_NAME="Delicias de Faby"
+ENV VITE_APP_URL=https://faby-web.4dgggl.easypanel.host
+ENV VITE_BACKEND=pocketbase
 
 # Construir la app
 RUN npm run build

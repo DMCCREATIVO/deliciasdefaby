@@ -37,6 +37,7 @@ const Admin = () => {
           }>
             <Routes>
               <Route index element={<Dashboard />} />
+              <Route path="dashboard" element={<Dashboard />} />
               <Route path="productos/*" element={<Productos />} />
               <Route path="activar-productos" element={<ActivarProductos />} />
               <Route path="pedidos/*" element={<Pedidos />} />

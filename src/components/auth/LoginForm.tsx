@@ -1,7 +1,7 @@
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { useState } from "react";
+import { useState, useEffect, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import { toast } from "sonner";
 import { pb } from "@/lib/pocketbase/client";
@@ -9,12 +9,23 @@ import { useAuth } from "@/context/AuthContext";
 
 export const LoginForm = () => {
   const navigate = useNavigate();
-  const { login } = useAuth();
+  const { login, user, isAdmin, isLoading: authLoading } = useAuth();
   const [formData, setFormData] = useState({
     email: "",
     password: "",
   });
   const [isLoading, setIsLoading] = useState(false);
+  // Stores the intended redirect path after login
+  const pendingRedirect = useRef<string | null>(null);
+
+  // Navigate only after auth state has fully propagated
+  useEffect(() => {
+    if (pendingRedirect.current && user && !authLoading) {
+      const destination = pendingRedirect.current;
+      pendingRedirect.current = null;
+      navigate(destination, { replace: true });
+    }
+  }, [user, authLoading, navigate]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -33,22 +44,20 @@ export const LoginForm = () => {
         throw new Error('No se recibieron datos del usuario');
       }
 
-      const isAdmin = authData.record.role === 'admin';
+      const isUserAdmin = authData.record.role === 'admin';
 
       login({
         id: authData.record.id,
-        isAdmin,
+        isAdmin: isUserAdmin,
         email: authData.record.email,
         name: authData.record.name || authData.record.email?.split('@')[0] || '',
       });
 
       toast.success("¡Bienvenido de vuelta! 👋");
 
-      if (isAdmin) {
-        navigate("/admin/dashboard");
-      } else {
-        navigate("/");
-      }
+      // Store redirect destination — the useEffect will navigate
+      // once the auth state has fully propagated through React.
+      pendingRedirect.current = isUserAdmin ? "/admin" : "/";
     } catch (error: any) {
       console.error('Error de login:', error);
 

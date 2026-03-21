@@ -1,39 +1,85 @@
 /* Sobrescribir estilos problemáticos del panel admin */
 
-/* 🎨 NUEVA PALETA DE COLORES MEJORADA PARA PANEL ADMIN */
-/* Diseñada para máxima legibilidad y contraste */
+/* 🎨 PALETA ADMIN — Sincronizada con el tema activo (--theme-*) */
+/* Cuando el usuario cambia tema, el panel admin se adapta automáticamente */
 
 :root {
-  /* Colores principales mejorados */
-  --admin-primary: #c2410c;        /* Orange-700 - más suave */
-  --admin-primary-light: #ea580c;  /* Orange-600 */
-  --admin-primary-dark: #9a3412;   /* Orange-800 */
+  /* Fallback si no hay tema — Colores por defecto */
+  --admin-primary: var(--theme-primary-btn, #c2410c);
+  --admin-primary-light: var(--theme-accent, #ea580c);
+  --admin-primary-dark: var(--theme-accent-secondary, #9a3412);
   
-  /* Fondos principales */
-  --admin-bg-main: #fefefe;        /* Blanco casi puro */
-  --admin-bg-card: #ffffff;        /* Blanco puro para cards */
-  --admin-bg-hover: #f8fafc;       /* Slate-50 muy sutil */
-  --admin-bg-accent: #fff7ed;      /* Orange-50 muy sutil */
+  /* Fondos — heredan del tema */
+  --admin-bg-main: var(--theme-main-bg, #fefefe);
+  --admin-bg-card: var(--theme-card-bg, #ffffff);
+  --admin-bg-hover: color-mix(in srgb, var(--theme-main-bg) 90%, var(--theme-accent) 5%);
+  --admin-bg-accent: color-mix(in srgb, var(--theme-accent) 8%, transparent);
   
-  /* Texto mejorado para máximo contraste */
-  --admin-text-primary: #0f172a;   /* Slate-900 - negro azulado */
-  --admin-text-secondary: #334155; /* Slate-700 */
-  --admin-text-muted: #64748b;     /* Slate-500 */
-  --admin-text-light: #94a3b8;     /* Slate-400 */
+  /* Texto — hereda del tema */
+  --admin-text-primary: var(--theme-text-primary, #0f172a);
+  --admin-text-secondary: var(--theme-text-secondary, #334155);
+  --admin-text-muted: color-mix(in srgb, var(--theme-text-secondary) 70%, transparent);
+  --admin-text-light: color-mix(in srgb, var(--theme-text-secondary) 50%, transparent);
   
-  /* Bordes y separadores */
-  --admin-border: #e2e8f0;         /* Slate-200 */
-  --admin-border-light: #f1f5f9;   /* Slate-100 */
+  /* Bordes */
+  --admin-border: var(--theme-card-border, #e2e8f0);
+  --admin-border-light: color-mix(in srgb, var(--theme-card-border) 50%, transparent);
   
-  /* Estados de color */
-  --admin-success: #059669;        /* Emerald-600 */
-  --admin-success-bg: #ecfdf5;     /* Emerald-50 */
-  --admin-warning: #d97706;        /* Amber-600 */
-  --admin-warning-bg: #fffbeb;     /* Amber-50 */
-  --admin-error: #dc2626;          /* Red-600 */
-  --admin-error-bg: #fef2f2;       /* Red-50 */
-  --admin-info: #2563eb;           /* Blue-600 */
-  --admin-info-bg: #eff6ff;        /* Blue-50 */
+  /* Estados (mantener para legibilidad) */
+  --admin-success: #059669;
+  --admin-success-bg: #ecfdf5;
+  --admin-warning: #d97706;
+  --admin-warning-bg: #fffbeb;
+  --admin-error: #dc2626;
+  --admin-error-bg: #fef2f2;
+  --admin-info: #2563eb;
+  --admin-info-bg: #eff6ff;
+}
+
+/* 📌 SIDEBAR ADMIN — Colores del tema activo */
+.admin-sidebar {
+  background: linear-gradient(180deg, var(--theme-sidebar-bg) 0%, color-mix(in srgb, var(--theme-sidebar-bg) 95%, black) 100%) !important;
+  border-color: color-mix(in srgb, var(--theme-sidebar-accent) 20%, transparent) !important;
+}
+
+.admin-sidebar-header {
+  background: linear-gradient(135deg, var(--theme-header-bg), var(--theme-primary-btn)) !important;
+  border-color: color-mix(in srgb, var(--theme-sidebar-accent) 30%, transparent) !important;
+}
+
+.admin-sidebar-logo {
+  background-color: rgba(255,255,255,0.95) !important;
+  color: var(--theme-primary-btn) !important;
+}
+
+.admin-sidebar-title,
+.admin-sidebar-toggle {
+  color: #ffffff !important;
+}
+
+.admin-sidebar-footer {
+  background-color: color-mix(in srgb, var(--theme-sidebar-bg) 120%, black) !important;
+  border-color: color-mix(in srgb, var(--theme-sidebar-accent) 15%, transparent) !important;
+}
+
+.admin-nav-link-active {
+  background: linear-gradient(135deg, var(--theme-primary-btn), var(--theme-accent)) !important;
+  color: var(--theme-primary-btn-text) !important;
+  box-shadow: 0 4px 12px color-mix(in srgb, var(--theme-accent) 25%, transparent) !important;
+  transform: scale(1.02);
+}
+
+.admin-nav-link-inactive {
+  color: var(--theme-sidebar-text) !important;
+}
+
+.admin-nav-link-inactive:hover {
+  color: var(--theme-sidebar-accent) !important;
+  background-color: var(--theme-sidebar-hover) !important;
+}
+
+.admin-nav-link .focus-visible\:ring-2 {
+  --tw-ring-color: var(--theme-sidebar-accent) !important;
 }
 
 /* 🔧 CONFIGURACIÓN GLOBAL DEL PANEL ADMIN */
@@ -44,6 +90,13 @@
     var(--admin-bg-accent) 100%) !important;
   color: var(--admin-text-primary) !important;
   min-height: 100vh;
+}
+
+.admin-main-content {
+  background: linear-gradient(135deg, 
+    var(--theme-card-bg) 0%, 
+    var(--theme-main-bg) 50%, 
+    color-mix(in srgb, var(--theme-main-bg) 95%, var(--theme-accent) 5%) 100%) !important;
 }
 
 /* 📋 CARDS Y CONTENEDORES MEJORADOS */
@@ -73,6 +126,13 @@
 .admin-page .text-slate-300,
 .admin-page .text-gray-300 {
   color: var(--admin-text-light) !important;
+}
+
+/* Ajustes extra para modal/paneles que usan slate-200 */
+.admin-page .text-zinc-200,
+.admin-page .text-slate-200,
+.admin-page .text-gray-200 {
+  color: var(--theme-text-primary) !important;
 }
 
 /* 🏷️ TÍTULOS Y HEADERS */
@@ -107,8 +167,8 @@
 .admin-page input:focus,
 .admin-page textarea:focus,
 .admin-page select:focus {
-  border-color: var(--admin-primary) !important;
-  box-shadow: 0 0 0 3px rgb(194 65 12 / 0.1) !important;
+  border-color: var(--theme-primary-btn) !important;
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--theme-primary-btn) 15%, transparent) !important;
   outline: none !important;
 }
 
@@ -165,17 +225,17 @@
 
 .admin-page .bg-orange-500,
 .admin-page .bg-amber-500 {
-  background: linear-gradient(135deg, var(--admin-primary), var(--admin-primary-light)) !important;
-  color: white !important;
+  background: linear-gradient(135deg, var(--theme-primary-btn), var(--theme-accent)) !important;
+  color: var(--theme-primary-btn-text) !important;
   border: none !important;
   box-shadow: 0 1px 3px 0 rgb(0 0 0 / 0.1) !important;
 }
 
 .admin-page .bg-orange-500:hover,
 .admin-page .bg-amber-500:hover {
-  background: linear-gradient(135deg, var(--admin-primary-dark), var(--admin-primary)) !important;
+  background: linear-gradient(135deg, var(--theme-accent-secondary), var(--theme-primary-btn)) !important;
   transform: translateY(-1px) !important;
-  box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1) !important;
+  box-shadow: 0 4px 6px color-mix(in srgb, var(--theme-accent) 20%, transparent) !important;
 }
 
 /* 📊 MODALES Y POPUPS */
@@ -240,26 +300,36 @@
 
 /* 🔄 LOADING Y SPINNER */
 .admin-page .animate-spin {
-  color: var(--admin-primary) !important;
+  color: var(--theme-primary-btn) !important;
 }
 
-/* 📱 TABS MEJORADAS */
+/* 📱 TABS MEJORADAS — Temáticas */
+.admin-tabs-list,
 .admin-page [role="tablist"] {
-  background-color: var(--admin-bg-hover) !important;
-  border-radius: 8px !important;
+  background-color: color-mix(in srgb, var(--theme-main-bg) 80%, var(--theme-accent) 5%) !important;
+  border-radius: 10px !important;
   padding: 0.25rem !important;
+  border: 1px solid var(--admin-border) !important;
 }
 
+.admin-tab-trigger,
 .admin-page [role="tab"] {
-  color: var(--admin-text-muted) !important;
-  border-radius: 6px !important;
+  color: var(--admin-text-secondary) !important;
+  border-radius: 8px !important;
   transition: all 0.2s ease !important;
 }
 
+.admin-tab-trigger:hover,
+.admin-page [role="tab"]:hover {
+  color: var(--theme-accent) !important;
+  background-color: color-mix(in srgb, var(--theme-accent) 8%, transparent) !important;
+}
+
+.admin-tab-active,
 .admin-page [role="tab"][data-state="active"] {
-  background-color: var(--admin-bg-card) !important;
-  color: var(--admin-text-primary) !important;
-  box-shadow: 0 1px 3px 0 rgb(0 0 0 / 0.1) !important;
+  background: linear-gradient(135deg, var(--theme-primary-btn), var(--theme-accent)) !important;
+  color: var(--theme-primary-btn-text) !important;
+  box-shadow: 0 2px 8px color-mix(in srgb, var(--theme-accent) 25%, transparent) !important;
 }
 
 /* 🎨 CLASSES UTILITARIAS ESPECÍFICAS */
@@ -506,3 +576,176 @@ button:focus {
 .shadow-lg {
   box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05) !important;
 } 
+
+/* ==========================================================================
+   ADMIN THEME UTILITIES (theme-aware)
+   Muchos componentes usan clases como `admin-card`, `admin-bg-accent-light`,
+   `admin-text-primary`, etc. Estas definiciones faltaban o no estaban ligadas
+   al tema activo. Este bloque normaliza el look de TODO el admin.
+   ========================================================================== */
+
+.admin-text-primary { color: var(--admin-text-primary) !important; }
+.admin-text-secondary { color: var(--admin-text-secondary) !important; }
+.admin-text-muted { color: var(--admin-text-muted) !important; }
+.admin-text-inverse { color: var(--theme-primary-btn-text, #ffffff) !important; }
+
+.admin-border { border-color: var(--admin-border) !important; }
+.admin-border-light { border-color: var(--theme-card-border, var(--admin-border)) !important; }
+
+.admin-card {
+  background: var(--theme-card-bg, #ffffff) !important;
+  border: 1px solid var(--theme-card-border, var(--admin-border)) !important;
+  border-radius: 14px !important;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.06), 0 10px 25px rgba(0,0,0,0.04) !important;
+  transition: transform 200ms ease, box-shadow 200ms ease, border-color 200ms ease !important;
+}
+
+.admin-card:hover {
+  border-color: color-mix(in srgb, var(--theme-accent) 45%, var(--theme-card-border)) !important;
+  box-shadow: 0 12px 32px rgba(0,0,0,0.08) !important;
+  transform: translateY(-2px) !important;
+}
+
+.admin-card-header {
+  background: linear-gradient(135deg, color-mix(in srgb, var(--theme-accent) 25%, transparent), color-mix(in srgb, var(--theme-accent-secondary) 20%, transparent)) !important;
+  border-bottom: 1px solid color-mix(in srgb, var(--theme-card-border) 65%, transparent) !important;
+  border-radius: 14px 14px 10px 10px !important;
+}
+
+.admin-card-content { color: var(--admin-text-primary) !important; }
+
+.admin-hover-secondary { transition: transform 200ms ease, box-shadow 200ms ease, border-color 200ms ease !important; }
+.admin-hover-secondary:hover { transform: translateY(-2px) !important; }
+
+.admin-button-primary {
+  background: linear-gradient(135deg, var(--theme-primary-btn, var(--theme-accent)), var(--theme-accent-secondary, #C71585)) !important;
+  color: var(--theme-primary-btn-text, #ffffff) !important;
+  border: none !important;
+  border-radius: 12px !important;
+  box-shadow: 0 12px 25px color-mix(in srgb, var(--theme-accent) 22%, transparent) !important;
+}
+
+.admin-button-primary:hover {
+  filter: brightness(0.98) saturate(1.05) !important;
+}
+
+.admin-button-secondary {
+  background: color-mix(in srgb, var(--theme-main-bg, #FBF7F2) 80%, var(--theme-card-bg, #ffffff)) !important;
+  color: var(--admin-text-primary) !important;
+  border: 1px solid color-mix(in srgb, var(--theme-card-border) 70%, transparent) !important;
+  border-radius: 12px !important;
+}
+
+.admin-input {
+  background-color: var(--theme-card-bg, #ffffff) !important;
+  color: var(--admin-text-primary) !important;
+  border: 1px solid color-mix(in srgb, var(--theme-card-border) 70%, transparent) !important;
+  border-radius: 12px !important;
+}
+
+.admin-input:focus {
+  border-color: var(--theme-accent-secondary, var(--theme-accent)) !important;
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--theme-accent-secondary) 18%, transparent) !important;
+}
+
+/* Backgrounds usadas por Estadísticas/Charts */
+.admin-bg-primary { background-color: var(--theme-primary-btn, var(--theme-accent)) !important; }
+.admin-bg-primary-light { background-color: color-mix(in srgb, var(--theme-primary-btn) 18%, var(--theme-card-bg)) !important; }
+.admin-bg-secondary-light { background-color: color-mix(in srgb, var(--theme-main-bg) 70%, var(--theme-card-bg)) !important; }
+.admin-bg-accent { background-color: var(--theme-accent-secondary, #C71585) !important; }
+.admin-bg-accent-light { background-color: color-mix(in srgb, var(--theme-accent-secondary) 20%, var(--theme-card-bg)) !important; }
+
+/* Text accent */
+.admin-text-accent { color: var(--theme-accent-secondary, var(--theme-accent)) !important; }
+
+/* Badges estados */
+.admin-badge-success {
+  background-color: var(--admin-success-bg) !important;
+  color: var(--admin-success) !important;
+  border: 1px solid color-mix(in srgb, var(--admin-success) 20%, var(--admin-success-bg)) !important;
+}
+.admin-badge-warning {
+  background-color: var(--admin-warning-bg) !important;
+  color: var(--admin-warning) !important;
+  border: 1px solid color-mix(in srgb, var(--admin-warning) 20%, var(--admin-warning-bg)) !important;
+}
+.admin-badge-error {
+  background-color: var(--admin-error-bg) !important;
+  color: var(--admin-error) !important;
+  border: 1px solid color-mix(in srgb, var(--admin-error) 20%, var(--admin-error-bg)) !important;
+}
+.admin-badge-info {
+  background-color: var(--admin-info-bg) !important;
+  color: var(--admin-info) !important;
+  border: 1px solid color-mix(in srgb, var(--admin-info) 20%, var(--admin-info-bg)) !important;
+}
+
+/* Estados background que aparecen en JSX */
+.admin-bg-success-light { background-color: var(--admin-success-bg) !important; }
+.admin-bg-warning-light { background-color: var(--admin-warning-bg) !important; }
+.admin-bg-error-light { background-color: var(--admin-error-bg) !important; }
+.admin-bg-info-light { background-color: var(--admin-info-bg) !important; }
+
+.admin-text-success { color: var(--admin-success) !important; }
+.admin-text-warning { color: var(--admin-warning) !important; }
+.admin-text-accent { color: var(--theme-accent-secondary, var(--theme-accent)) !important; }
+.admin-status-active {
+  background-color: color-mix(in srgb, var(--theme-accent-secondary) 16%, transparent) !important;
+  border: 1px solid color-mix(in srgb, var(--theme-accent-secondary) 35%, transparent) !important;
+  color: var(--theme-text-primary, var(--admin-text-primary)) !important;
+}
+
+/* Tabs del admin */
+.admin-tab-active {
+  background: linear-gradient(135deg, var(--theme-primary-btn), var(--theme-accent-secondary)) !important;
+  color: var(--theme-primary-btn-text, #ffffff) !important;
+}
+
+/* ==========================================================================
+   ADMIN TABLE + MODALS (theme-aware)
+   ========================================================================== */
+.admin-page .admin-table-container {
+  background-color: var(--theme-card-bg) !important;
+  border-color: var(--theme-card-border) !important;
+}
+
+.admin-page .admin-table-head {
+  color: var(--theme-text-secondary) !important;
+  font-weight: 600 !important;
+  background: color-mix(in srgb, var(--theme-accent) 8%, transparent) !important;
+}
+
+.admin-page .admin-table-row {
+  border-color: var(--theme-card-border) !important;
+}
+
+.admin-page .admin-table-row:hover {
+  background-color: color-mix(in srgb, var(--theme-accent) 10%, transparent) !important;
+}
+
+.admin-page .admin-table-cell-muted {
+  color: var(--theme-text-secondary) !important;
+}
+
+.admin-page .admin-dialog-content {
+  background-color: var(--theme-card-bg) !important;
+  border-color: var(--theme-card-border) !important;
+  color: var(--theme-text-primary) !important;
+}
+
+.admin-page .admin-dialog-title {
+  color: var(--theme-accent-secondary) !important;
+}
+
+.admin-page .admin-alert-action-primary {
+  background: linear-gradient(135deg, var(--theme-primary-btn), var(--theme-accent-secondary)) !important;
+  color: var(--theme-primary-btn-text) !important;
+}
+
+.admin-page .admin-alert-action-primary:hover {
+  filter: brightness(0.98) saturate(1.05) !important;
+}
+
+.admin-page .admin-alert-action-cancel {
+  border-color: color-mix(in srgb, var(--theme-card-border) 85%, transparent) !important;
+}

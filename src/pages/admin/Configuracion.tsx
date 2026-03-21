@@ -7,10 +7,11 @@ import { Button } from "@/components/ui/button";
 import { Switch } from "@/components/ui/switch";
 import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { AlertCircle, Upload, Save, RefreshCw, Globe, DollarSign, Store, MessageSquare, CreditCard, Clock, MapPin, Settings, Building, Phone } from "lucide-react";
+import { AlertCircle, Upload, Save, RefreshCw, Globe, DollarSign, Store, MessageSquare, CreditCard, Clock, MapPin, Settings, Building, Phone, Palette } from "lucide-react";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { settingsService } from "@/lib/database/index";
 import { BusinessSettings } from "@/lib/database/settings.pocketbase";
+import { ThemeSwitcher } from "@/components/admin/ThemeSwitcher";
 import { toast } from "sonner";
 
 const defaultSettings: BusinessSettings = {
@@ -204,34 +205,51 @@ export default function Configuracion() {
               )}
             </Button>
           </div>
-
           <Tabs defaultValue="general" className="w-full">
-            <TabsList className="grid w-full grid-cols-6 bg-zinc-800">
-              <TabsTrigger value="general" className="data-[state=active]:bg-brand-pink">
-                <Store className="w-4 h-4 mr-2" />
+            <TabsList className="grid w-full grid-cols-2 sm:grid-cols-4 lg:grid-cols-7 gap-1 p-1 admin-tabs-list">
+              <TabsTrigger value="general" className="admin-tab-trigger data-[state=active]:admin-tab-active">
+                <Store className="w-4 h-4 mr-1.5 shrink-0" />
                 General
               </TabsTrigger>
-              <TabsTrigger value="contacto" className="data-[state=active]:bg-brand-pink">
-                <MessageSquare className="w-4 h-4 mr-2" />
+              <TabsTrigger value="apariencia" className="admin-tab-trigger data-[state=active]:admin-tab-active">
+                <Palette className="w-4 h-4 mr-1.5 shrink-0" />
+                Apariencia
+              </TabsTrigger>
+              <TabsTrigger value="contacto" className="admin-tab-trigger data-[state=active]:admin-tab-active">
+                <MessageSquare className="w-4 h-4 mr-1.5 shrink-0" />
                 Contacto
               </TabsTrigger>
-              <TabsTrigger value="pagos" className="data-[state=active]:bg-brand-pink">
-                <CreditCard className="w-4 h-4 mr-2" />
+              <TabsTrigger value="pagos" className="admin-tab-trigger data-[state=active]:admin-tab-active">
+                <CreditCard className="w-4 h-4 mr-1.5 shrink-0" />
                 Pagos
               </TabsTrigger>
-              <TabsTrigger value="entrega" className="data-[state=active]:bg-brand-pink">
-                <Clock className="w-4 h-4 mr-2" />
+              <TabsTrigger value="entrega" className="admin-tab-trigger data-[state=active]:admin-tab-active">
+                <Clock className="w-4 h-4 mr-1.5 shrink-0" />
                 Entrega
               </TabsTrigger>
-              <TabsTrigger value="social" className="data-[state=active]:bg-brand-pink">
-                <Globe className="w-4 h-4 mr-2" />
-                Redes Sociales
+              <TabsTrigger value="social" className="admin-tab-trigger data-[state=active]:admin-tab-active">
+                <Globe className="w-4 h-4 mr-1.5 shrink-0" />
+                Redes
               </TabsTrigger>
-              <TabsTrigger value="avanzado" className="data-[state=active]:bg-brand-pink">
-                <AlertCircle className="w-4 h-4 mr-2" />
+              <TabsTrigger value="avanzado" className="admin-tab-trigger data-[state=active]:admin-tab-active">
+                <AlertCircle className="w-4 h-4 mr-1.5 shrink-0" />
                 Avanzado
               </TabsTrigger>
             </TabsList>
+
+            <TabsContent value="apariencia" className="space-y-6">
+              <Card className="admin-card">
+                <CardHeader className="admin-card-header">
+                  <CardTitle className="text-zinc-800 flex items-center gap-2">
+                    <Palette className="h-5 w-5 text-amber-600" />
+                    Temas y Apariencia
+                  </CardTitle>
+                </CardHeader>
+                <CardContent className="admin-card-content py-6">
+                  <ThemeSwitcher />
+                </CardContent>
+              </Card>
+            </TabsContent>
 
             {/* Configuración General */}
             <TabsContent value="general" className="space-y-6">

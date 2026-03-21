@@ -95,10 +95,10 @@ export const BusinessMetrics = ({
   return (
     <div className={`space-y-6 ${className}`}>
       <div className="flex items-center justify-between">
-        <h3 className="text-lg font-semibold text-brand-cafe">
+        <h3 className="text-lg font-semibold admin-text-accent">
           📈 Métricas de Rendimiento
         </h3>
-        <Badge variant="outline" className="bg-green-50 text-green-700 border-green-200">
+        <Badge variant="outline" className="admin-badge-success">
           <TrendingUp className="h-3 w-3 mr-1" />
           Crecimiento
         </Badge>
@@ -108,16 +108,27 @@ export const BusinessMetrics = ({
         {metrics.map((metric, index) => (
           <Card 
             key={index}
-            className="bg-white border-gray-100 hover:shadow-md transition-all duration-200"
+            className="admin-card shadow-none"
           >
             <CardContent className="p-4">
               <div className="flex items-start justify-between mb-2">
-                <div className={`p-2 rounded-lg bg-gray-50 ${metric.color}`}>
+                <div
+                  className="p-2 rounded-lg"
+                  style={{
+                    backgroundColor:
+                      'color-mix(in srgb, var(--theme-accent-secondary) 14%, transparent)',
+                    color: 'var(--theme-accent-secondary)'
+                  }}
+                >
                   {metric.icon}
                 </div>
-                <div className={`flex items-center gap-1 text-xs font-medium ${
-                  metric.trend === 'up' ? 'text-green-600' : 'text-red-600'
-                }`}>
+                <div
+                  className="flex items-center gap-1 text-xs font-medium"
+                  style={{
+                    color:
+                      metric.trend === 'up' ? 'var(--admin-success)' : 'var(--admin-error)'
+                  }}
+                >
                   {metric.trend === 'up' ? (
                     <ArrowUpRight className="h-3 w-3" />
                   ) : (
@@ -128,13 +139,13 @@ export const BusinessMetrics = ({
               </div>
               
               <div>
-                <p className="text-sm font-medium text-gray-600 mb-1">
+                <p className="text-sm font-medium admin-text-secondary mb-1">
                   {metric.title}
                 </p>
-                <p className="text-xl font-bold text-brand-cafe mb-1">
+                <p className="text-xl font-bold admin-text-accent mb-1">
                   {metric.value}
                 </p>
-                <p className="text-xs text-gray-500">
+                <p className="text-xs admin-text-muted">
                   {metric.description}
                 </p>
               </div>
@@ -144,22 +155,30 @@ export const BusinessMetrics = ({
       </div>
 
       {/* Insights adicionales */}
-      <Card className="bg-gradient-to-r from-brand-pink/5 to-brand-cafe/5 border-brand-cafe/10">
+      <Card className="admin-card">
         <CardContent className="p-4">
           <div className="flex items-start gap-3">
-            <div className="p-2 bg-brand-pink/10 rounded-lg">
-              <Target className="h-5 w-5 text-brand-pink" />
+            <div
+              className="p-2 rounded-lg"
+              style={{
+                backgroundColor:
+                  'color-mix(in srgb, var(--theme-accent-secondary) 12%, transparent)',
+              }}
+            >
+              <Target className="h-5 w-5 admin-text-accent" />
             </div>
             <div className="flex-1">
-              <h4 className="font-semibold text-brand-cafe mb-1">
+              <h4 className="font-semibold admin-text-accent mb-1">
                 💡 Insights Clave
               </h4>
-              <div className="space-y-1 text-sm text-brand-cafe/80">
+              <div className="space-y-1 text-sm admin-text-secondary">
                 <p>• El ticket promedio está por encima del promedio de la industria</p>
                 <p>• La tasa de conversión muestra potencial de crecimiento</p>
                 <p>• Los usuarios están altamente satisfechos con el servicio</p>
                 {totalRevenue > 300000 && (
-                  <p className="text-green-600 font-medium">• ¡Meta de revenue mensual alcanzada! 🎉</p>
+                  <p className="font-medium" style={{ color: 'var(--admin-success)' }}>
+                    • ¡Meta de revenue mensual alcanzada! 🎉
+                  </p>
                 )}
               </div>
             </div>

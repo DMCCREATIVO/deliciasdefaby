@@ -38,9 +38,9 @@ export const SalesChart = () => {
   const data = processOrdersData(orders);
 
   return (
-    <Card className="bg-zinc-900 border-zinc-800">
-      <CardHeader>
-        <CardTitle className="text-brand-pink">Ventas Mensuales</CardTitle>
+    <Card className="admin-card">
+      <CardHeader className="admin-card-header">
+        <CardTitle className="admin-text-accent">Ventas Mensuales</CardTitle>
       </CardHeader>
       <CardContent>
         <div className="h-[300px]">
@@ -48,21 +48,27 @@ export const SalesChart = () => {
             <AreaChart data={data}>
               <defs>
                 <linearGradient id="colorGuest" x1="0" y1="0" x2="0" y2="1">
-                  <stop offset="5%" stopColor="#E75480" stopOpacity={0.8} />
-                  <stop offset="95%" stopColor="#E75480" stopOpacity={0} />
+                  <stop offset="5%" stopColor="var(--theme-accent-secondary, #C71585)" stopOpacity={0.85} />
+                  <stop offset="95%" stopColor="var(--theme-accent-secondary, #C71585)" stopOpacity={0} />
                 </linearGradient>
                 <linearGradient id="colorRegistered" x1="0" y1="0" x2="0" y2="1">
-                  <stop offset="5%" stopColor="#8B4513" stopOpacity={0.8} />
-                  <stop offset="95%" stopColor="#8B4513" stopOpacity={0} />
+                  <stop offset="5%" stopColor="var(--theme-accent, #5C4033)" stopOpacity={0.85} />
+                  <stop offset="95%" stopColor="var(--theme-accent, #5C4033)" stopOpacity={0} />
                 </linearGradient>
               </defs>
-              <CartesianGrid strokeDasharray="3 3" stroke="#374151" />
-              <XAxis dataKey="name" stroke="#9CA3AF" />
-              <YAxis stroke="#9CA3AF" />
+              <CartesianGrid
+                strokeDasharray="3 3"
+                stroke="color-mix(in srgb, var(--theme-text-secondary) 45%, transparent)"
+              />
+              <XAxis
+                dataKey="name"
+                stroke="color-mix(in srgb, var(--theme-text-secondary) 55%, transparent)"
+              />
+              <YAxis stroke="color-mix(in srgb, var(--theme-text-secondary) 55%, transparent)" />
               <Tooltip
                 contentStyle={{
-                  backgroundColor: '#1F2937',
-                  border: '1px solid #374151',
+                  backgroundColor: 'var(--theme-card-bg)',
+                  border: `1px solid color-mix(in srgb, var(--theme-card-border) 80%, transparent)`,
                   borderRadius: '0.5rem'
                 }}
               />
@@ -70,7 +76,7 @@ export const SalesChart = () => {
                 type="monotone"
                 dataKey="guest"
                 name="Invitados"
-                stroke="#E75480"
+                stroke="var(--theme-accent-secondary, #C71585)"
                 fillOpacity={1}
                 fill="url(#colorGuest)"
               />
@@ -78,7 +84,7 @@ export const SalesChart = () => {
                 type="monotone"
                 dataKey="registered"
                 name="Clientes"
-                stroke="#8B4513"
+                stroke="var(--theme-accent, #5C4033)"
                 fillOpacity={1}
                 fill="url(#colorRegistered)"
               />

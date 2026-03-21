@@ -1,0 +1,609 @@
+/*
+ * ╔══════════════════════════════════════════════════════════════════╗
+ * ║   SISTEMA DE PLANTILLAS / TEMAS  —  Delicias de Faby            ║
+ * ║   3 temas: Clásico Café | Rosa Dulce | Navidad                  ║
+ * ║   Todas las variables se aplican automáticamente desde          ║
+ * ║   ThemeContext.tsx al hacer setProperty en :root                ║
+ * ╚══════════════════════════════════════════════════════════════════╝
+ *
+ * Las variables --theme-* son inyectadas por ThemeContext.tsx.
+ * Este archivo define los fallbacks para cuando no hay tema activo,
+ * y aplica las variables al diseño completo del FRONTEND.
+ */
+
+/* ─────────────────────────────────────────────────────────────
+   TEMA POR DEFECTO (Clásico Café) — Fallback si PocketBase falla
+   ───────────────────────────────────────────────────────────── */
+:root {
+  /* Colores del tema activo (sobreescritos por ThemeContext) */
+  --theme-accent:            #5C4033;
+  --theme-accent-secondary:  #C71585;
+  --theme-card-bg:           #FFFFFF;
+  --theme-card-border:       #E8D5C4;
+  --theme-header-bg:         #FFFFFF;
+  --theme-header-text:       #5C4033;
+  --theme-main-bg:           #FBF7F2;
+  --theme-primary-btn:       #5C4033;
+  --theme-primary-btn-text:  #FFFFFF;
+  --theme-sidebar-accent:    #C71585;
+  --theme-sidebar-bg:        #2D1B14;
+  --theme-sidebar-hover:     #3E2520;
+  --theme-sidebar-text:      #F8F0E3;
+  --theme-text-primary:      #2C1810;
+  --theme-text-secondary:    #5C4033;
+
+  /* Stat cards */
+  --theme-stat-1: #5C4033;
+  --theme-stat-2: #C71585;
+  --theme-stat-3: #8B5E3C;
+  --theme-stat-4: #D4A574;
+}
+
+
+/* ─────────────────────────────────────────────────────────────
+   APLICACIÓN DEL TEMA AL BODY Y FONDO GENERAL
+   ───────────────────────────────────────────────────────────── */
+body {
+  background-color: var(--theme-main-bg);
+  color: var(--theme-text-primary);
+  transition: background-color 0.4s ease, color 0.4s ease;
+}
+
+
+/* ─────────────────────────────────────────────────────────────
+   NAVBAR — TEMA APLICADO
+   ───────────────────────────────────────────────────────────── */
+.themed-navbar {
+  background-color: var(--theme-header-bg) !important;
+  border-bottom-color: color-mix(in srgb, var(--theme-accent) 20%, transparent) !important;
+  box-shadow: 0 2px 20px color-mix(in srgb, var(--theme-accent) 10%, transparent) !important;
+  transition: background-color 0.4s ease, border-color 0.4s ease !important;
+}
+
+.themed-navbar-link {
+  color: var(--theme-header-text) !important;
+  transition: color 0.2s ease !important;
+}
+
+.themed-navbar-link:hover {
+  color: var(--theme-accent-secondary) !important;
+}
+
+.themed-navbar-logo-text {
+  color: var(--theme-accent) !important;
+}
+
+.themed-navbar-btn {
+  background-color: var(--theme-primary-btn) !important;
+  color: var(--theme-primary-btn-text) !important;
+  border: none !important;
+  transition: opacity 0.2s ease, transform 0.2s ease !important;
+}
+
+.themed-navbar-btn:hover {
+  opacity: 0.9 !important;
+  transform: translateY(-1px) !important;
+}
+
+
+/* ─────────────────────────────────────────────────────────────
+   HERO / SECCIÓN PRINCIPAL — TEMA APLICADO
+   ───────────────────────────────────────────────────────────── */
+.themed-hero-overlay {
+  background: linear-gradient(
+    to bottom,
+    color-mix(in srgb, var(--theme-accent) 40%, black 60%) 0%,
+    color-mix(in srgb, var(--theme-accent) 20%, transparent 80%) 50%,
+    color-mix(in srgb, var(--theme-accent) 40%, black 60%) 100%
+  ) !important;
+}
+
+.themed-hero-title {
+  color: #FFFFFF !important;
+  text-shadow: 0 2px 20px color-mix(in srgb, var(--theme-accent) 80%, transparent) !important;
+}
+
+.themed-hero-btn-primary {
+  background-color: var(--theme-primary-btn) !important;
+  color: var(--theme-primary-btn-text) !important;
+  border: 2px solid color-mix(in srgb, var(--theme-primary-btn) 80%, white) !important;
+  transition: all 0.3s ease !important;
+}
+
+.themed-hero-btn-primary:hover {
+  background-color: color-mix(in srgb, var(--theme-primary-btn) 80%, black) !important;
+  transform: translateY(-2px) !important;
+  box-shadow: 0 8px 25px color-mix(in srgb, var(--theme-primary-btn) 40%, transparent) !important;
+}
+
+.themed-hero-btn-secondary {
+  border: 2px solid white !important;
+  background: rgba(255,255,255,0.9) !important;
+  color: var(--theme-accent) !important;
+  transition: all 0.3s ease !important;
+}
+
+.themed-hero-btn-secondary:hover {
+  background: white !important;
+  transform: translateY(-2px) !important;
+}
+
+
+/* ─────────────────────────────────────────────────────────────
+   PRODUCT CARD — TEMA APLICADO
+   ───────────────────────────────────────────────────────────── */
+.themed-card {
+  background-color: var(--theme-card-bg) !important;
+  border-color: var(--theme-card-border) !important;
+  transition: all 0.3s ease !important;
+}
+
+.themed-card:hover {
+  border-color: var(--theme-accent) !important;
+  box-shadow: 0 8px 30px color-mix(in srgb, var(--theme-accent) 15%, transparent) !important;
+}
+
+.themed-card-title {
+  color: var(--theme-accent) !important;
+}
+
+.themed-card-title:hover {
+  color: var(--theme-text-primary) !important;
+}
+
+.themed-card-price {
+  color: var(--theme-accent) !important;
+  font-weight: 700 !important;
+}
+
+.themed-card-badge {
+  background-color: var(--theme-primary-btn) !important;
+  color: var(--theme-primary-btn-text) !important;
+}
+
+.themed-card-btn {
+  background-color: var(--theme-primary-btn) !important;
+  color: var(--theme-primary-btn-text) !important;
+  transition: all 0.3s ease !important;
+}
+
+.themed-card-btn:hover {
+  background-color: color-mix(in srgb, var(--theme-primary-btn) 80%, black) !important;
+  box-shadow: 0 4px 15px color-mix(in srgb, var(--theme-primary-btn) 30%, transparent) !important;
+}
+
+.themed-card-btn-outline {
+  border-color: var(--theme-accent) !important;
+  color: var(--theme-accent) !important;
+}
+
+.themed-card-btn-outline:hover {
+  background-color: color-mix(in srgb, var(--theme-accent) 10%, transparent) !important;
+}
+
+
+/* ─────────────────────────────────────────────────────────────
+   CATÁLOGO / SECCIÓN DE PRODUCTOS — TEMA APLICADO
+   ───────────────────────────────────────────────────────────── */
+.themed-catalog-section {
+  background: linear-gradient(
+    135deg,
+    color-mix(in srgb, var(--theme-main-bg) 95%, var(--theme-accent) 5%) 0%,
+    white 50%,
+    color-mix(in srgb, var(--theme-main-bg) 95%, var(--theme-accent) 5%) 100%
+  ) !important;
+  border-color: color-mix(in srgb, var(--theme-accent) 20%, transparent) !important;
+}
+
+.themed-section-title {
+  background: linear-gradient(
+    135deg,
+    var(--theme-accent) 0%,
+    var(--theme-accent-secondary) 100%
+  ) !important;
+  -webkit-background-clip: text !important;
+  -webkit-text-fill-color: transparent !important;
+  background-clip: text !important;
+}
+
+.themed-section-subtitle {
+  color: color-mix(in srgb, var(--theme-accent) 70%, transparent) !important;
+}
+
+.themed-catalog-btn {
+  background-color: var(--theme-primary-btn) !important;
+  color: var(--theme-primary-btn-text) !important;
+  border-color: var(--theme-primary-btn) !important;
+  transition: all 0.3s ease !important;
+}
+
+.themed-catalog-btn:hover {
+  background-color: color-mix(in srgb, var(--theme-primary-btn) 80%, black) !important;
+  border-color: color-mix(in srgb, var(--theme-primary-btn) 80%, black) !important;
+  box-shadow: 0 8px 25px color-mix(in srgb, var(--theme-primary-btn) 30%, transparent) !important;
+}
+
+
+/* ─────────────────────────────────────────────────────────────
+   FOOTER — TEMA APLICADO
+   ───────────────────────────────────────────────────────────── */
+.themed-footer {
+  background: linear-gradient(
+    135deg,
+    color-mix(in srgb, var(--theme-accent) 90%, black) 0%,
+    color-mix(in srgb, var(--theme-accent) 70%, black) 100%
+  ) !important;
+  transition: background 0.4s ease !important;
+}
+
+.themed-footer-title {
+  color: #FFFFFF !important;
+}
+
+.themed-footer-title-bar {
+  background-color: var(--theme-accent-secondary) !important;
+}
+
+.themed-footer-text {
+  color: rgba(255, 255, 255, 0.75) !important;
+}
+
+.themed-footer-link {
+  color: rgba(255, 255, 255, 0.75) !important;
+  transition: color 0.2s ease !important;
+}
+
+.themed-footer-link:hover {
+  color: var(--theme-accent-secondary) !important;
+}
+
+.themed-footer-icon-bg {
+  background-color: rgba(255, 255, 255, 0.1) !important;
+}
+
+.themed-footer-icon-bg:hover {
+  background-color: color-mix(in srgb, var(--theme-accent-secondary) 30%, transparent) !important;
+}
+
+.themed-footer-dot {
+  background-color: color-mix(in srgb, var(--theme-accent-secondary) 50%, transparent) !important;
+}
+
+.themed-footer-heart {
+  color: var(--theme-accent-secondary) !important;
+}
+
+.themed-footer-border {
+  border-color: rgba(255, 255, 255, 0.15) !important;
+}
+
+.themed-footer-quote {
+  border-left-color: color-mix(in srgb, var(--theme-accent-secondary) 60%, transparent) !important;
+  background-color: rgba(255, 255, 255, 0.05) !important;
+}
+
+
+/* ─────────────────────────────────────────────────────────────
+   BLOG — TEMA APLICADO
+   ───────────────────────────────────────────────────────────── */
+.themed-blog-accent {
+  color: var(--theme-accent-secondary) !important;
+}
+
+.themed-blog-card {
+  background-color: var(--theme-card-bg) !important;
+  border-color: var(--theme-card-border) !important;
+  transition: all 0.3s ease !important;
+}
+
+.themed-blog-card:hover {
+  border-color: var(--theme-accent-secondary) !important;
+  box-shadow: 0 8px 30px color-mix(in srgb, var(--theme-accent-secondary) 15%, transparent) !important;
+}
+
+.themed-blog-title {
+  color: var(--theme-accent-secondary) !important;
+}
+
+.themed-blog-tag {
+  background-color: color-mix(in srgb, var(--theme-accent-secondary) 10%, transparent) !important;
+  color: var(--theme-accent-secondary) !important;
+  border: 1px solid color-mix(in srgb, var(--theme-accent-secondary) 30%, transparent) !important;
+}
+
+.themed-blog-btn {
+  background: linear-gradient(
+    135deg,
+    var(--theme-accent-secondary),
+    color-mix(in srgb, var(--theme-accent-secondary) 70%, var(--theme-accent))
+  ) !important;
+  color: white !important;
+}
+
+.themed-blog-back-btn {
+  color: var(--theme-accent-secondary) !important;
+}
+
+.themed-blog-back-btn:hover {
+  color: color-mix(in srgb, var(--theme-accent-secondary) 70%, black) !important;
+}
+
+
+/* ─────────────────────────────────────────────────────────────
+   PÁGINAS INTERNAS (Contacto, Perfil, Pedidos, etc.) — TEMA
+   ───────────────────────────────────────────────────────────── */
+.themed-page-header {
+  background: linear-gradient(
+    135deg,
+    var(--theme-accent) 0%,
+    var(--theme-accent-secondary) 100%
+  ) !important;
+  color: white !important;
+}
+
+.themed-page-accent {
+  color: var(--theme-accent) !important;
+}
+
+.themed-page-accent-secondary {
+  color: var(--theme-accent-secondary) !important;
+}
+
+.themed-page-bg {
+  background-color: var(--theme-main-bg) !important;
+}
+
+.themed-input:focus {
+  border-color: var(--theme-accent) !important;
+  box-shadow: 0 0 0 2px color-mix(in srgb, var(--theme-accent) 20%, transparent) !important;
+}
+
+.themed-btn-primary {
+  background-color: var(--theme-primary-btn) !important;
+  color: var(--theme-primary-btn-text) !important;
+  border-color: var(--theme-primary-btn) !important;
+  transition: all 0.2s ease !important;
+}
+
+.themed-btn-primary:hover {
+  background-color: color-mix(in srgb, var(--theme-primary-btn) 80%, black) !important;
+  transform: translateY(-1px) !important;
+  box-shadow: 0 4px 15px color-mix(in srgb, var(--theme-primary-btn) 30%, transparent) !important;
+}
+
+.themed-divider {
+  border-color: color-mix(in srgb, var(--theme-accent) 20%, transparent) !important;
+}
+
+
+/* ─────────────────────────────────────────────────────────────
+   CARRITO / CHECKOUT — TEMA APLICADO
+   ───────────────────────────────────────────────────────────── */
+.themed-cart-header {
+  background: linear-gradient(
+    135deg,
+    var(--theme-accent) 0%,
+    var(--theme-accent-secondary) 100%
+  );
+  color: white;
+}
+
+.themed-cart-item-name {
+  color: var(--theme-text-primary) !important;
+}
+
+.themed-cart-total-label {
+  color: var(--theme-text-secondary) !important;
+}
+
+.themed-cart-total-value {
+  color: var(--theme-accent) !important;
+  font-weight: 700 !important;
+}
+
+
+/* ─────────────────────────────────────────────────────────────
+   FEATURES / SECCIÓN DE CARACTERÍSTICAS — TEMA
+   ───────────────────────────────────────────────────────────── */
+.themed-feature-icon {
+  background-color: color-mix(in srgb, var(--theme-accent) 10%, transparent) !important;
+  color: var(--theme-accent) !important;
+}
+
+.themed-feature-title {
+  color: var(--theme-text-primary) !important;
+}
+
+.themed-feature-text {
+  color: var(--theme-text-secondary) !important;
+}
+
+
+/* ─────────────────────────────────────────────────────────────
+   TESTIMONIOS — TEMA
+   ───────────────────────────────────────────────────────────── */
+.themed-testimonial-accent {
+  color: var(--theme-accent-secondary) !important;
+}
+
+.themed-testimonial-card {
+  background-color: var(--theme-card-bg) !important;
+  border-color: var(--theme-card-border) !important;
+}
+
+.themed-testimonial-star {
+  color: var(--theme-accent-secondary) !important;
+}
+
+.themed-testimonial-avatar-ring {
+  border-color: color-mix(in srgb, var(--theme-accent) 30%, transparent) !important;
+}
+
+
+/* ─────────────────────────────────────────────────────────────
+   SECCIONES ADICIONALES — Tema aplicado a todo el sitio
+   ───────────────────────────────────────────────────────────── */
+.themed-features-section {
+  background-color: var(--theme-main-bg) !important;
+  color: var(--theme-text-primary) !important;
+}
+
+.themed-testimonials-section {
+  background: linear-gradient(
+    to bottom,
+    var(--theme-main-bg) 0%,
+    color-mix(in srgb, var(--theme-main-bg) 98%, var(--theme-accent) 2%) 100%
+  ) !important;
+}
+
+.themed-blog-section {
+  background: linear-gradient(
+    to bottom,
+    color-mix(in srgb, var(--theme-main-bg) 95%, var(--theme-accent) 5%) 0%,
+    var(--theme-main-bg) 100%
+  ) !important;
+}
+
+.themed-featured-badge {
+  background-color: var(--theme-accent-secondary) !important;
+  color: white !important;
+}
+
+/* ─────────────────────────────────────────────────────────────
+   RESPONSIVE — Ajustes para todos los dispositivos
+   ───────────────────────────────────────────────────────────── */
+
+/* Móvil pequeño (< 480px) */
+@media (max-width: 480px) {
+  .themed-footer {
+    padding: 2rem 0.75rem !important;
+  }
+
+  .themed-catalog-section {
+    padding: 0.75rem !important;
+    border-radius: 0.75rem !important;
+  }
+
+  .themed-section-title {
+    font-size: 1.5rem !important;
+  }
+}
+
+/* Móvil (≤ 640px) */
+@media (max-width: 640px) {
+  .themed-footer {
+    padding: 2.5rem 1rem !important;
+  }
+
+  .themed-hero-btn-primary,
+  .themed-hero-btn-secondary {
+    width: 100% !important;
+    justify-content: center !important;
+    min-height: 48px !important;
+  }
+
+  .themed-catalog-section {
+    padding: 1rem !important;
+  }
+
+  .themed-card:hover {
+    transform: none !important;
+  }
+
+  .themed-navbar {
+    padding-left: 0.75rem !important;
+    padding-right: 0.75rem !important;
+  }
+}
+
+/* Tablet (≤ 768px) */
+@media (max-width: 768px) {
+  .themed-navbar-mobile-menu {
+    background-color: var(--theme-header-bg) !important;
+    border-top-color: color-mix(in srgb, var(--theme-accent) 15%, transparent) !important;
+  }
+
+  .themed-catalog-section {
+    padding: 1.25rem !important;
+  }
+}
+
+/* Tablet landscape / Desktop pequeño (≤ 1024px) */
+@media (max-width: 1024px) {
+  body {
+    -webkit-tap-highlight-color: transparent;
+  }
+}
+
+/* Dispositivos táctiles - sin hover exagerado */
+@media (hover: none) and (pointer: coarse) {
+  .themed-card:hover,
+  .themed-blog-card:hover {
+    transform: none !important;
+  }
+
+  .themed-hero-btn-primary:hover,
+  .themed-hero-btn-secondary:hover,
+  .themed-card-btn:hover,
+  .themed-catalog-btn:hover {
+    transform: none !important;
+  }
+
+  button:active,
+  [role="button"]:active {
+    transform: scale(0.98);
+  }
+}
+
+/* Safe area para dispositivos con notch */
+@supports (padding: env(safe-area-inset-bottom)) {
+  .themed-navbar {
+    padding-top: env(safe-area-inset-top);
+  }
+
+  .themed-footer {
+    padding-bottom: calc(2rem + env(safe-area-inset-bottom)) !important;
+  }
+}
+
+
+/* ─────────────────────────────────────────────────────────────
+   SCROLLBAR TEMÁTICA
+   ───────────────────────────────────────────────────────────── */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+::-webkit-scrollbar-track {
+  background: var(--theme-main-bg);
+}
+::-webkit-scrollbar-thumb {
+  background-color: color-mix(in srgb, var(--theme-accent) 40%, transparent);
+  border-radius: 4px;
+  transition: background-color 0.3s ease;
+}
+::-webkit-scrollbar-thumb:hover {
+  background-color: color-mix(in srgb, var(--theme-accent) 70%, transparent);
+}
+
+
+/* ─────────────────────────────────────────────────────────────
+   SELECCIÓN DE TEXTO TEMÁTICA
+   ───────────────────────────────────────────────────────────── */
+::selection {
+  background-color: color-mix(in srgb, var(--theme-accent-secondary) 30%, transparent);
+  color: var(--theme-text-primary);
+}
+
+/* ==========================================================================
+   Dialog / Modales (público) - tema activo
+   ========================================================================== */
+.themed-dialog-content {
+  background-color: var(--theme-card-bg) !important;
+  border-color: var(--theme-card-border) !important;
+  color: var(--theme-text-primary) !important;
+}
+
+.themed-dialog-close {
+  color: var(--theme-text-secondary) !important;
+}

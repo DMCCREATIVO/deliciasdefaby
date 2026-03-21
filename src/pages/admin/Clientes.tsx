@@ -28,37 +28,37 @@ function ClienteModal({ cliente, open, onClose, onSave, onDelete }: { cliente: U
 
   return (
     <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
-      <div className="bg-zinc-900 p-6 rounded-lg w-full max-w-md space-y-4 border border-zinc-700">
-        <h3 className="text-xl font-bold text-white mb-2">Detalles del Cliente</h3>
+      <div className="admin-dialog-content p-6 rounded-lg w-full max-w-md space-y-4 border">
+        <h3 className="text-xl font-bold admin-text-primary mb-2">Detalles del Cliente</h3>
         <div className="space-y-2">
           <Input
             value={editData.name || ''}
             onChange={e => setEditData((prev: any) => ({ ...prev, name: e.target.value, full_name: e.target.value }))}
-            className="bg-zinc-800 border-zinc-700 text-white"
+            className="admin-input"
             placeholder="Nombre completo"
           />
           <Input
             value={editData.email || ''}
             onChange={e => setEditData((prev: any) => ({ ...prev, email: e.target.value }))}
-            className="bg-zinc-800 border-zinc-700 text-white"
+            className="admin-input"
             placeholder="Correo electrónico"
           />
           <Input
             value={editData.phone || ''}
             onChange={e => setEditData((prev: any) => ({ ...prev, phone: e.target.value }))}
-            className="bg-zinc-800 border-zinc-700 text-white"
+            className="admin-input"
             placeholder="Teléfono"
           />
           <Input
             value={editData.address || ''}
             onChange={e => setEditData((prev: any) => ({ ...prev, address: e.target.value }))}
-            className="bg-zinc-800 border-zinc-700 text-white"
+            className="admin-input"
             placeholder="Dirección"
           />
         </div>
         <div className="flex gap-2 mt-4">
-          <Button onClick={() => onSave(editData)} className="bg-orange-500 hover:bg-orange-600">Guardar</Button>
-          <Button variant="outline" onClick={onClose} className="border-zinc-700">Cerrar</Button>
+          <Button onClick={() => onSave(editData)} className="admin-button-primary">Guardar</Button>
+          <Button variant="outline" onClick={onClose} className="admin-button-secondary">Cerrar</Button>
           <Button variant="destructive" onClick={() => onDelete(editData)} className="ml-auto">Eliminar</Button>
         </div>
       </div>
@@ -123,97 +123,170 @@ const Clientes = () => {
   return (
     <div className="h-full p-6 space-y-6">
       <div className="flex justify-between items-center">
-        <h2 className="text-2xl font-bold text-white">Clientes</h2>
+        <h2 className="text-2xl font-bold admin-text-primary">Clientes</h2>
       </div>
 
       <Input
         placeholder="Buscar clientes..."
         value={searchTerm}
         onChange={(e) => setSearchTerm(e.target.value)}
-        className="max-w-sm bg-zinc-800 border-zinc-700 text-white"
+        className="max-w-sm admin-input"
       />
 
-      <div className="rounded-lg border border-zinc-800 bg-zinc-900/50 backdrop-blur-sm">
+      <div className="rounded-lg border overflow-hidden admin-table-container">
         {isLoading ? (
           <div className="flex justify-center items-center p-8">
             <Loader2 className="h-8 w-8 animate-spin text-brand-pink" />
           </div>
         ) : filteredProfiles?.length === 0 ? (
-          <div className="p-8 text-center text-zinc-400">
+          <div className="p-8 text-center admin-text-muted">
             No se encontraron clientes
           </div>
         ) : (
-          <Table>
-            <TableHeader>
-              <TableRow>
-                <TableHead className="text-zinc-400">Nombre</TableHead>
-                <TableHead className="text-zinc-400">Email</TableHead>
-                <TableHead className="text-zinc-400">Teléfono</TableHead>
-                <TableHead className="text-zinc-400">Dirección</TableHead>
-                <TableHead className="text-zinc-400">Fecha registro</TableHead>
-                <TableHead className="text-zinc-400">Acciones</TableHead>
-              </TableRow>
-            </TableHeader>
-            <TableBody>
+          <>
+            <div className="hidden sm:block">
+              <Table>
+                <TableHeader>
+                  <TableRow>
+                    <TableHead className="admin-table-head">Nombre</TableHead>
+                    <TableHead className="admin-table-head">Email</TableHead>
+                    <TableHead className="admin-table-head">Teléfono</TableHead>
+                    <TableHead className="admin-table-head">Dirección</TableHead>
+                    <TableHead className="admin-table-head">Fecha registro</TableHead>
+                    <TableHead className="admin-table-head">Acciones</TableHead>
+                  </TableRow>
+                </TableHeader>
+                <TableBody>
+                  {filteredProfiles?.map((profile) => (
+                    <TableRow key={profile.id} className="admin-table-row">
+                      <TableCell className="font-medium admin-text-primary">
+                        {profile.full_name || 'Sin nombre'}
+                      </TableCell>
+                      <TableCell className="admin-table-cell-muted">
+                        {profile.email || 'Sin email'}
+                      </TableCell>
+                      <TableCell className="admin-table-cell-muted">
+                        {profile.phone || 'Sin teléfono'}
+                      </TableCell>
+                      <TableCell className="admin-table-cell-muted">
+                        {profile.address || 'Sin dirección'}
+                      </TableCell>
+                      <TableCell className="admin-table-cell-muted">
+                        {profile.created_at ? new Date(profile.created_at).toLocaleDateString() : 'Sin fecha'}
+                      </TableCell>
+                      <TableCell>
+                        <div className="flex gap-2">
+                          {profile.phone && (
+                            <Button
+                              variant="ghost"
+                              size="icon"
+                              onClick={() => handleWhatsAppClick(profile.phone!)}
+                              className="hover:text-green-500 hover:bg-green-500/10"
+                            >
+                              <Phone className="h-4 w-4" />
+                            </Button>
+                          )}
+                          <Button
+                            variant="ghost"
+                            size="icon"
+                            onClick={() => { setSelectedCliente(profile); setModalOpen(true); }}
+                            className="hover:text-brand-pink hover:bg-brand-pink/10"
+                          >
+                            <Eye className="h-4 w-4" />
+                          </Button>
+                          <Button
+                            variant="ghost"
+                            size="icon"
+                            onClick={() => { setSelectedCliente(profile); setModalOpen(true); }}
+                            className="hover:text-blue-500 hover:bg-blue-500/10"
+                          >
+                            <Pencil className="h-4 w-4" />
+                          </Button>
+                          <Button
+                            variant="ghost"
+                            size="icon"
+                            onClick={() => deleteMutation.mutate(profile)}
+                            className="hover:text-red-500 hover:bg-red-500/10"
+                          >
+                            <Trash2 className="h-4 w-4" />
+                          </Button>
+                        </div>
+                      </TableCell>
+                    </TableRow>
+                  ))}
+                </TableBody>
+              </Table>
+            </div>
+
+            <div className="sm:hidden p-3 space-y-3">
               {filteredProfiles?.map((profile) => (
-                <TableRow key={profile.id}>
-                  <TableCell className="font-medium text-white">
-                    {profile.full_name || 'Sin nombre'}
-                  </TableCell>
-                  <TableCell className="text-zinc-300">
-                    {profile.email || 'Sin email'}
-                  </TableCell>
-                  <TableCell className="text-zinc-300">
-                    {profile.phone || 'Sin teléfono'}
-                  </TableCell>
-                  <TableCell className="text-zinc-300">
-                    {profile.address || 'Sin dirección'}
-                  </TableCell>
-                  <TableCell className="text-zinc-300">
-                    {profile.created_at ? new Date(profile.created_at).toLocaleDateString() : 'Sin fecha'}
-                  </TableCell>
-                  <TableCell>
-                    <div className="flex gap-2">
+                <div key={profile.id} className="admin-card shadow-none p-4">
+                  <div className="flex items-start justify-between gap-3">
+                    <div className="min-w-0">
+                      <div className="font-medium admin-text-primary truncate">
+                        {profile.full_name || 'Sin nombre'}
+                      </div>
+                      <div className="text-sm admin-text-muted break-words mt-1">
+                        {profile.email || 'Sin email'}
+                      </div>
                       {profile.phone && (
-                        <Button
-                          variant="ghost"
-                          size="icon"
-                          onClick={() => handleWhatsAppClick(profile.phone!)}
-                          className="hover:text-green-500 hover:bg-green-500/10"
-                        >
-                          <Phone className="h-4 w-4" />
-                        </Button>
+                        <div className="text-sm admin-text-muted break-words mt-1">
+                          {profile.phone}
+                        </div>
                       )}
-                      <Button
-                        variant="ghost"
-                        size="icon"
-                        onClick={() => { setSelectedCliente(profile); setModalOpen(true); }}
-                        className="hover:text-brand-pink hover:bg-brand-pink/10"
-                      >
-                        <Eye className="h-4 w-4" />
-                      </Button>
-                      <Button
-                        variant="ghost"
-                        size="icon"
-                        onClick={() => { setSelectedCliente(profile); setModalOpen(true); }}
-                        className="hover:text-blue-500 hover:bg-blue-500/10"
-                      >
-                        <Pencil className="h-4 w-4" />
-                      </Button>
-                      <Button
-                        variant="ghost"
-                        size="icon"
-                        onClick={() => deleteMutation.mutate(profile)}
-                        className="hover:text-red-500 hover:bg-red-500/10"
-                      >
-                        <Trash2 className="h-4 w-4" />
-                      </Button>
                     </div>
-                  </TableCell>
-                </TableRow>
+                    <div className="text-right text-xs admin-text-muted">
+                      {profile.created_at ? new Date(profile.created_at).toLocaleDateString() : 'Sin fecha'}
+                    </div>
+                  </div>
+
+                  <div className="mt-3">
+                    <p className="text-xs admin-text-muted">Dirección</p>
+                    <p className="text-sm admin-text-primary break-words">
+                      {profile.address || 'Sin dirección'}
+                    </p>
+                  </div>
+
+                  <div className="mt-4 flex items-center justify-end gap-2">
+                    {profile.phone && (
+                      <Button
+                        variant="ghost"
+                        size="icon"
+                        onClick={() => handleWhatsAppClick(profile.phone!)}
+                        className="hover:bg-[color-mix(in_srgb,var(--admin-success)_18%,transparent)] hover:text-[var(--admin-success)]"
+                      >
+                        <Phone className="h-4 w-4" />
+                      </Button>
+                    )}
+                    <Button
+                      variant="ghost"
+                      size="icon"
+                      onClick={() => { setSelectedCliente(profile); setModalOpen(true); }}
+                      className="hover:bg-[color-mix(in_srgb,var(--theme-accent)_18%,transparent)] hover:text-[var(--theme-accent)]"
+                    >
+                      <Eye className="h-4 w-4" />
+                    </Button>
+                    <Button
+                      variant="ghost"
+                      size="icon"
+                      onClick={() => { setSelectedCliente(profile); setModalOpen(true); }}
+                      className="hover:bg-[color-mix(in_srgb,var(--theme-accent)_18%,transparent)] hover:text-[var(--theme-accent)]"
+                    >
+                      <Pencil className="h-4 w-4" />
+                    </Button>
+                    <Button
+                      variant="ghost"
+                      size="icon"
+                      onClick={() => deleteMutation.mutate(profile)}
+                      className="hover:bg-[color-mix(in_srgb,var(--admin-error)_18%,transparent)] hover:text-[var(--admin-error)]"
+                    >
+                      <Trash2 className="h-4 w-4" />
+                    </Button>
+                  </div>
+                </div>
               ))}
-            </TableBody>
-          </Table>
+            </div>
+          </>
         )}
       </div>
       <ClienteModal

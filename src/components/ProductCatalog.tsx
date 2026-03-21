@@ -100,13 +100,13 @@ export const ProductCatalog = () => {
   return (
     <div className="w-full -mt-20 sm:-mt-28 lg:-mt-32 relative z-10 animate-fade-in" id="productos">
       <div className="w-full px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto">
-        <div className="w-full bg-gradient-to-br from-brand-beige/95 via-white/90 to-brand-beige/95 backdrop-blur-xl rounded-xl shadow-2xl border border-brand-cafe/20 p-4 sm:p-6 lg:p-8 hover:border-brand-cafe/30 transition-all duration-500">
+        <div className="themed-catalog-section w-full backdrop-blur-xl rounded-xl shadow-2xl border p-4 sm:p-6 lg:p-8 transition-all duration-500">
           <section className="mb-8 lg:mb-12">
             <div className="text-center mb-6 sm:mb-8">
-              <h2 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold bg-gradient-to-r from-brand-cafe via-brand-brown to-brand-cafe bg-clip-text text-transparent mb-2 sm:mb-4">
+              <h2 className="themed-section-title text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold mb-2 sm:mb-4">
                 Productos Destacados
               </h2>
-              <p className="text-sm sm:text-base md:text-lg text-brand-cafe/70 mb-6 sm:mb-8">
+              <p className="themed-section-subtitle text-sm sm:text-base md:text-lg mb-6 sm:mb-8">
                 Descubre nuestra selección especial de panes artesanales
               </p>
             </div>
@@ -187,9 +187,8 @@ export const ProductCatalog = () => {
             )}
             <div className="flex justify-center mt-6 sm:mt-8 lg:mt-12">
               <Button
-                variant="outline"
                 size="lg"
-                className="bg-brand-cafe hover:bg-brand-brown text-white border-brand-cafe hover:border-brand-brown font-medium px-8 sm:px-10 py-5 sm:py-7 text-base sm:text-lg shadow-xl hover:shadow-brand-cafe/30 transition-all duration-300 group rounded-full hover:scale-105"
+                className="themed-catalog-btn border-0 font-medium px-8 sm:px-10 py-5 sm:py-7 text-base sm:text-lg shadow-xl transition-all duration-300 group rounded-full hover:scale-105"
                 onClick={() => navigate('/productos')}
               >
                 Ver catálogo completo

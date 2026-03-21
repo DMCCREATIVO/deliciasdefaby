@@ -78,10 +78,15 @@
     @apply text-sm sm:text-base md:text-lg leading-relaxed;
   }
 
-  /* Mejorar accesibilidad táctil en móvil - elementos deben ser mínimo 44px */
-  button, input, select, textarea, [role="button"] {
-    min-height: 44px;
-    min-width: 44px;
+  /* Mejorar accesibilidad táctil en móvil - elementos interactivos mínimo 44px */
+  @media (max-width: 768px) {
+    button,
+    input,
+    select,
+    textarea,
+    [role="button"] {
+      min-height: 44px;
+    }
   }
 
   /* Mejorar usabilidad de inputs en móvil */

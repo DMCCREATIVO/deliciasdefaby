@@ -20,12 +20,17 @@ export const OrderStatusChart = () => {
   };
 
   const data = processStatusData(orders);
-  const COLORS = ['#E75480', '#8B4513', '#DEB887', '#374151'];
+  const COLORS = [
+    'var(--theme-accent-secondary, #C71585)',
+    'var(--theme-accent, #5C4033)',
+    'color-mix(in srgb, var(--theme-accent-secondary) 60%, white)',
+    'color-mix(in srgb, var(--theme-text-secondary) 55%, transparent)',
+  ];
 
   return (
-    <Card className="bg-zinc-900 border-zinc-800">
-      <CardHeader>
-        <CardTitle className="text-brand-pink">Estado de Pedidos</CardTitle>
+    <Card className="admin-card">
+      <CardHeader className="admin-card-header">
+        <CardTitle className="admin-text-accent">Estado de Pedidos</CardTitle>
       </CardHeader>
       <CardContent>
         <div className="h-[300px]">
@@ -37,7 +42,7 @@ export const OrderStatusChart = () => {
                 cy="50%"
                 labelLine={false}
                 outerRadius={80}
-                fill="#8884d8"
+                fill="var(--theme-accent-secondary, #C71585)"
                 dataKey="value"
               >
                 {data.map((entry, index) => (
@@ -46,8 +51,8 @@ export const OrderStatusChart = () => {
               </Pie>
               <Tooltip
                 contentStyle={{
-                  backgroundColor: '#1F2937',
-                  border: '1px solid #374151',
+                  backgroundColor: 'var(--theme-card-bg)',
+                  border: `1px solid color-mix(in srgb, var(--theme-card-border) 80%, transparent)`,
                   borderRadius: '0.5rem'
                 }}
               />

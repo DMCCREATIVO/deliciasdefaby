@@ -68,37 +68,37 @@ export const BlogPreview = () => {
   };
 
   return (
-    <section className="w-full py-16 sm:py-20 bg-gradient-to-b from-brand-beige/10 to-background relative overflow-hidden">
-      <div className="absolute top-0 left-0 w-full h-64 bg-gradient-to-b from-brand-cafe/5 to-transparent pointer-events-none" />
-      <div className="absolute -top-24 -right-24 w-48 h-48 rounded-full bg-brand-brown/10 blur-3xl" />
-      <div className="absolute -bottom-24 -left-24 w-48 h-48 rounded-full bg-brand-accent/10 blur-3xl" />
+    <section className="themed-blog-section w-full py-12 sm:py-16 md:py-20 relative overflow-hidden">
+      <div className="absolute top-0 left-0 w-full h-48 sm:h-64 bg-gradient-to-b from-[var(--theme-accent)]/5 to-transparent pointer-events-none" />
+      <div className="absolute -top-24 -right-24 w-40 sm:w-48 h-40 sm:h-48 rounded-full opacity-20 blur-3xl" style={{ backgroundColor: 'var(--theme-accent-secondary)' }} />
+      <div className="absolute -bottom-24 -left-24 w-40 sm:w-48 h-40 sm:h-48 rounded-full opacity-15 blur-3xl" style={{ backgroundColor: 'var(--theme-accent)' }} />
 
       <div className="container mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
         <div className="max-w-6xl mx-auto">
-          <div className="text-center mb-12 sm:mb-16">
-            <div className="flex items-center justify-center gap-3 mb-4 sm:mb-6">
-              <BookOpen className="w-6 sm:w-8 h-6 sm:h-8 text-brand-cafe" />
-              <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold text-brand-cafe">
+          <div className="text-center mb-10 sm:mb-12 md:mb-16">
+            <div className="flex items-center justify-center gap-2 sm:gap-3 mb-3 sm:mb-4 md:mb-6">
+              <BookOpen className="w-5 h-5 sm:w-6 sm:h-6 md:w-8 md:h-8 themed-blog-accent" />
+              <h2 className="themed-section-title text-xl sm:text-2xl md:text-3xl lg:text-4xl font-bold">
                 Nuestro Blog
               </h2>
             </div>
-            <div className="w-24 h-1 bg-gradient-to-r from-brand-cafe to-brand-brown rounded-full mx-auto mb-3 sm:mb-4"></div>
-            <p className="text-base sm:text-lg text-brand-cafe/70 max-w-2xl mx-auto">
+            <div className="w-16 sm:w-24 h-1 rounded-full mx-auto mb-3 sm:mb-4" style={{ background: `linear-gradient(to right, var(--theme-accent), var(--theme-accent-secondary))` }} />
+            <p className="themed-section-subtitle text-sm sm:text-base md:text-lg max-w-2xl mx-auto px-2">
               Descubre recetas, consejos y las historias detrás de nuestras deliciosas creaciones artesanales
             </p>
           </div>
 
           {isLoading ? (
-            <div className="flex justify-center items-center h-64">
-              <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-brand-cafe"></div>
+            <div className="flex justify-center items-center h-48 sm:h-64">
+              <div className="animate-spin rounded-full h-10 w-10 sm:h-12 sm:w-12 border-2 border-[var(--theme-accent)]/20 border-t-[var(--theme-accent)]"></div>
             </div>
           ) : (
             <>
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8 mb-8 sm:mb-12">
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6 md:gap-8 mb-8 sm:mb-12">
                 {displayPosts.map((post) => (
                   <Card
                     key={post.id}
-                    className="group bg-white/95 backdrop-blur-sm border border-brand-beige hover:border-brand-cafe/50 transition-all duration-500 hover:shadow-xl hover:shadow-brand-cafe/10 cursor-pointer rounded-lg overflow-hidden"
+                    className="themed-blog-card group backdrop-blur-sm border transition-all duration-500 hover:shadow-xl cursor-pointer rounded-lg overflow-hidden"
                     onClick={() => navigate(`/blog/${post.slug}`)}
                   >
                     <CardHeader className="relative overflow-hidden p-0">
@@ -106,37 +106,38 @@ export const BlogPreview = () => {
                         <img
                           src={post.image_url}
                           alt={post.title}
-                          className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
+                          className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
                           loading="lazy"
+                          sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
                         />
                         <div className="absolute inset-0 bg-gradient-to-t from-black/40 to-transparent opacity-60 group-hover:opacity-80 transition-opacity duration-500" />
                       </div>
                     </CardHeader>
-                    <CardContent className="p-4 sm:p-6">
-                      <div className="flex items-center gap-4 text-xs text-brand-cafe/60 mb-3">
+                    <CardContent className="p-4 sm:p-5 md:p-6">
+                      <div className="flex items-center gap-3 sm:gap-4 text-xs themed-section-subtitle mb-3">
                         <div className="flex items-center gap-1">
-                          <Calendar size={14} className="text-brand-cafe" />
+                          <Calendar size={14} className="themed-blog-accent shrink-0" />
                           <time dateTime={post.created_at}>
                             {format(new Date(post.created_at), "d 'de' MMMM", { locale: es })}
                           </time>
                         </div>
                         <div className="flex items-center gap-1">
-                          <Clock size={14} className="text-brand-cafe" />
+                          <Clock size={14} className="themed-blog-accent shrink-0" />
                           <span>{calculateReadingTime(post.content)} min</span>
                         </div>
                       </div>
 
-                      <CardTitle className="text-lg sm:text-xl font-bold text-brand-cafe group-hover:text-brand-brown transition-colors duration-300 mb-3 line-clamp-2">
+                      <CardTitle className="themed-blog-title text-base sm:text-lg md:text-xl font-bold transition-colors duration-300 mb-3 line-clamp-2">
                         {post.title}
                       </CardTitle>
 
-                      <p className="text-brand-cafe/70 text-sm leading-relaxed line-clamp-3 mb-4">
+                      <p className="themed-section-subtitle text-sm leading-relaxed line-clamp-3 mb-4">
                         {post.excerpt || 'Descubre más sobre este interesante artículo...'}
                       </p>
 
-                      <div className="flex items-center justify-between pt-4 border-t border-brand-beige">
-                        <span className="text-brand-cafe font-medium text-sm">Leer artículo</span>
-                        <ArrowRight className="w-4 h-4 text-brand-cafe group-hover:translate-x-1 transition-transform duration-300" />
+                      <div className="flex items-center justify-between pt-4 border-t themed-footer-border">
+                        <span className="themed-page-accent font-medium text-sm">Leer artículo</span>
+                        <ArrowRight className="w-4 h-4 themed-blog-accent group-hover:translate-x-1 transition-transform duration-300 shrink-0" />
                       </div>
                     </CardContent>
                   </Card>
@@ -146,10 +147,10 @@ export const BlogPreview = () => {
               <div className="text-center">
                 <Button
                   onClick={() => navigate('/blog')}
-                  className="bg-brand-cafe hover:bg-brand-brown text-white font-semibold px-6 sm:px-8 py-4 sm:py-6 text-sm sm:text-base rounded-full shadow-lg hover:shadow-xl transform hover:-translate-y-1 transition-all duration-500"
+                  className="themed-btn-primary font-semibold px-5 sm:px-6 md:px-8 py-4 sm:py-5 md:py-6 text-sm sm:text-base rounded-full shadow-lg transition-all duration-300 w-full sm:w-auto max-w-xs mx-auto"
                 >
                   Ver todos los artículos
-                  <ArrowRight className="ml-2 w-4 sm:w-5 h-4 sm:h-5" />
+                  <ArrowRight className="ml-2 w-4 h-4 sm:w-5 sm:h-5 shrink-0" />
                 </Button>
               </div>
             </>

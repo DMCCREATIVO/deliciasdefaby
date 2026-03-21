@@ -180,14 +180,14 @@ export default function ProductsPage() {
       {/* Header con acciones */}
       <div className="flex justify-between items-center">
         <div>
-          <h2 className="text-2xl font-bold text-zinc-200">Productos</h2>
-          <p className="text-sm text-zinc-400 mt-1">
+          <h2 className="text-2xl font-bold admin-text-primary">Productos</h2>
+          <p className="text-sm admin-text-muted mt-1">
             Gestiona el catálogo de productos
           </p>
         </div>
         <Button
           onClick={handleCreateProduct}
-          className="bg-orange-500 hover:bg-orange-600 text-white"
+          className="admin-button-primary"
         >
           <Plus className="w-4 h-4 mr-2" />
           Nuevo Producto
@@ -202,13 +202,13 @@ export default function ProductsPage() {
             placeholder="Buscar productos..."
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
-            className="pl-9 bg-zinc-800/50 border-zinc-700 text-white focus-visible:ring-orange-500"
+            className="admin-input pl-9 focus-visible:ring-[color-mix(in_srgb,var(--theme-accent-secondary)_35%,_transparent)]"
           />
         </div>
         <Button
           variant="outline"
           size="icon"
-          className="border-zinc-700 text-zinc-400 hover:text-white hover:bg-zinc-800"
+          className="admin-button-secondary"
         >
           <Filter className="w-4 h-4" />
         </Button>
@@ -216,13 +216,17 @@ export default function ProductsPage() {
 
       {/* Estadísticas rápidas */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-        <Card className="p-4 bg-gradient-to-br from-blue-50 to-blue-100 border-blue-200 shadow-md hover:shadow-lg transition-all duration-300">
+        <Card className="p-4 admin-card shadow-none">
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-sm text-blue-600 font-medium">Total Productos</p>
-              <p className="text-2xl font-bold mt-1 text-blue-800">{products.length}</p>
+              <p className="text-sm font-medium" style={{ color: 'var(--theme-accent-secondary)' }}>
+                Total Productos
+              </p>
+              <p className="text-2xl font-bold mt-1" style={{ color: 'var(--theme-accent-secondary)' }}>
+                {products.length}
+              </p>
             </div>
-            <div className="p-3 bg-blue-500 rounded-full">
+            <div className="p-3 rounded-full" style={{ backgroundColor: 'var(--theme-accent-secondary)' }}>
               <svg className="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4" />
               </svg>
@@ -230,15 +234,17 @@ export default function ProductsPage() {
           </div>
         </Card>
 
-        <Card className="p-4 bg-gradient-to-br from-amber-50 to-amber-100 border-amber-200 shadow-md hover:shadow-lg transition-all duration-300">
+        <Card className="p-4 admin-card shadow-none">
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-sm text-amber-600 font-medium">Bajo Stock</p>
-              <p className="text-2xl font-bold mt-1 text-amber-800">
+              <p className="text-sm font-medium" style={{ color: 'var(--theme-accent)' }}>
+                Bajo Stock
+              </p>
+              <p className="text-2xl font-bold mt-1" style={{ color: 'var(--theme-accent)' }}>
                 {products.filter(p => p.stock > 0 && p.stock < 10).length}
               </p>
             </div>
-            <div className="p-3 bg-amber-500 rounded-full">
+            <div className="p-3 rounded-full" style={{ backgroundColor: 'var(--theme-accent)' }}>
               <svg className="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L4.082 16.5c-.77.833.192 2.5 1.732 2.5z" />
               </svg>
@@ -246,15 +252,17 @@ export default function ProductsPage() {
           </div>
         </Card>
 
-        <Card className="p-4 bg-gradient-to-br from-red-50 to-red-100 border-red-200 shadow-md hover:shadow-lg transition-all duration-300">
+        <Card className="p-4 admin-card shadow-none">
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-sm text-red-600 font-medium">Sin Stock</p>
-              <p className="text-2xl font-bold mt-1 text-red-800">
+              <p className="text-sm font-medium" style={{ color: 'var(--theme-accent-secondary)' }}>
+                Sin Stock
+              </p>
+              <p className="text-2xl font-bold mt-1" style={{ color: 'var(--theme-accent-secondary)' }}>
                 {products.filter(p => p.stock === 0).length}
               </p>
             </div>
-            <div className="p-3 bg-red-500 rounded-full">
+            <div className="p-3 rounded-full" style={{ backgroundColor: 'var(--theme-accent-secondary)' }}>
               <svg className="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
               </svg>
@@ -262,15 +270,17 @@ export default function ProductsPage() {
           </div>
         </Card>
 
-        <Card className="p-4 bg-gradient-to-br from-emerald-50 to-emerald-100 border-emerald-200 shadow-md hover:shadow-lg transition-all duration-300">
+        <Card className="p-4 admin-card shadow-none">
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-sm text-emerald-600 font-medium">Categorías</p>
-              <p className="text-2xl font-bold mt-1 text-emerald-800">
+              <p className="text-sm font-medium" style={{ color: 'var(--theme-accent)' }}>
+                Categorías
+              </p>
+              <p className="text-2xl font-bold mt-1" style={{ color: 'var(--theme-accent)' }}>
                 {new Set(products.map(p => p.category_id)).size}
               </p>
             </div>
-            <div className="p-3 bg-emerald-500 rounded-full">
+            <div className="p-3 rounded-full" style={{ backgroundColor: 'var(--theme-accent)' }}>
               <svg className="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10" />
               </svg>
@@ -280,117 +290,182 @@ export default function ProductsPage() {
       </div>
 
       {/* Tabla de productos */}
-      <div className="rounded-lg border border-zinc-800 overflow-hidden">
+      <div className="rounded-lg border overflow-hidden admin-table-container">
         {isLoading ? (
           <div className="p-8 flex justify-center">
-            <Loader2 className="h-8 w-8 animate-spin text-orange-500" />
+            <Loader2 className="h-8 w-8 animate-spin" style={{ color: 'var(--theme-accent)' }} />
           </div>
         ) : (
-          <Table>
-            <TableHeader>
-              <TableRow className="hover:bg-zinc-800/50 border-zinc-800">
-                <TableHead className="text-zinc-400">Producto</TableHead>
-                <TableHead className="text-zinc-400">Categoría</TableHead>
-                <TableHead className="text-zinc-400">Precio</TableHead>
-                <TableHead className="text-zinc-400">Stock</TableHead>
-                <TableHead className="text-zinc-400">Estado</TableHead>
-                <TableHead className="text-zinc-400 text-right">Acciones</TableHead>
-              </TableRow>
-            </TableHeader>
-            <TableBody>
+          <>
+            <div className="hidden sm:block">
+              <Table>
+                <TableHeader>
+                  <TableRow className="admin-table-row">
+                    <TableHead className="admin-table-head">Producto</TableHead>
+                    <TableHead className="admin-table-head">Categoría</TableHead>
+                    <TableHead className="admin-table-head">Precio</TableHead>
+                    <TableHead className="admin-table-head">Stock</TableHead>
+                    <TableHead className="admin-table-head">Estado</TableHead>
+                    <TableHead className="admin-table-head text-right">Acciones</TableHead>
+                  </TableRow>
+                </TableHeader>
+                <TableBody>
+                  {filteredProducts.length === 0 ? (
+                    <TableRow>
+                      <TableCell colSpan={6} className="text-center admin-text-muted py-8">
+                        No se encontraron productos
+                      </TableCell>
+                    </TableRow>
+                  ) : (
+                    filteredProducts.map((product) => (
+                      <TableRow key={product.id} className="admin-table-row">
+                        <TableCell className="font-medium admin-text-primary">
+                          <div className="flex items-center gap-3">
+                            {product.image_url && (
+                              <img
+                                src={product.image_url}
+                                alt={product.title}
+                                className="w-10 h-10 rounded-lg object-cover"
+                              />
+                            )}
+                            <div>
+                              <p className="font-medium">{product.title}</p>
+                              <p className="text-sm admin-text-muted">{product.short_description}</p>
+                            </div>
+                          </div>
+                        </TableCell>
+                        <TableCell className="admin-table-cell-muted">
+                          {product.categories?.name || "Sin categoría"}
+                        </TableCell>
+                        <TableCell className="admin-table-cell-muted">
+                          <span className="font-bold admin-text-accent">{formatCLP(product.price)}</span>
+                        </TableCell>
+                        <TableCell>
+                          <Badge
+                            variant={
+                              product.stock === 0
+                                ? "destructive"
+                                : product.stock < 10
+                                  ? "warning"
+                                  : "default"
+                            }
+                          >
+                            {product.stock} unidades
+                          </Badge>
+                        </TableCell>
+                        <TableCell>
+                          <Badge variant={product.is_active ? "success" : "secondary"}>
+                            {product.is_active ? "Activo" : "Inactivo"}
+                          </Badge>
+                        </TableCell>
+                        <TableCell className="text-right">
+                          <div className="flex justify-end gap-2">
+                            <Button
+                              size="icon"
+                              variant="ghost"
+                              onClick={() => handleEditProduct(product)}
+                              className="hover:bg-[color-mix(in_srgb,var(--theme-accent)_18%,transparent)] hover:text-[var(--theme-accent)]"
+                            >
+                              <Edit2 className="h-4 w-4" />
+                            </Button>
+                            <Button
+                              size="icon"
+                              variant="ghost"
+                              onClick={() => handleDeleteClick(product.id)}
+                              className="hover:bg-[color-mix(in_srgb,var(--admin-error)_18%,transparent)] hover:text-[var(--admin-error)]"
+                            >
+                              <Trash2 className="h-4 w-4" />
+                            </Button>
+                          </div>
+                        </TableCell>
+                      </TableRow>
+                    ))
+                  )}
+                </TableBody>
+              </Table>
+            </div>
+
+            <div className="sm:hidden p-3 space-y-3">
               {filteredProducts.length === 0 ? (
-                <TableRow>
-                  <TableCell
-                    colSpan={6}
-                    className="text-center text-zinc-400 py-8"
-                  >
-                    No se encontraron productos
-                  </TableCell>
-                </TableRow>
+                <div className="p-8 text-center admin-text-muted">No se encontraron productos</div>
               ) : (
                 filteredProducts.map((product) => (
-                  <TableRow
-                    key={product.id}
-                    className="hover:bg-zinc-800/50 border-zinc-800"
-                  >
-                    <TableCell className="font-medium text-zinc-200">
-                      <div className="flex items-center gap-3">
+                  <div key={product.id} className="admin-card shadow-none p-4">
+                    <div className="flex items-start justify-between gap-3">
+                      <div className="min-w-0 flex items-center gap-3">
                         {product.image_url && (
                           <img
                             src={product.image_url}
                             alt={product.title}
-                            className="w-10 h-10 rounded-lg object-cover"
+                            className="w-10 h-10 rounded-lg object-cover border border-[var(--theme-card-border)]"
                           />
                         )}
-                        <div>
-                          <p className="font-medium">{product.title}</p>
-                          <p className="text-sm text-zinc-400">
-                            {product.short_description}
-                          </p>
+                        <div className="min-w-0">
+                          <p className="font-medium admin-text-primary truncate">{product.title}</p>
+                          <p className="text-sm admin-text-muted line-clamp-2">{product.short_description}</p>
                         </div>
                       </div>
-                    </TableCell>
-                    <TableCell className="text-zinc-400">
-                      {product.categories?.name || "Sin categoría"}
-                    </TableCell>
-                    <TableCell className="text-zinc-400">
-                      <span className="font-bold text-green-600">
-                        {formatCLP(product.price)}
-                      </span>
-                    </TableCell>
-                    <TableCell>
-                      <Badge
-                        variant={
-                          product.stock === 0
-                            ? "destructive"
-                            : product.stock < 10
-                              ? "warning"
-                              : "default"
-                        }
-                      >
-                        {product.stock} unidades
-                      </Badge>
-                    </TableCell>
-                    <TableCell>
-                      <Badge
-                        variant={product.is_active ? "success" : "secondary"}
-                      >
-                        {product.is_active ? "Activo" : "Inactivo"}
-                      </Badge>
-                    </TableCell>
-                    <TableCell className="text-right">
-                      <div className="flex justify-end gap-2">
-                        <Button
-                          size="icon"
-                          variant="ghost"
-                          onClick={() => handleEditProduct(product)}
-                          className="hover:bg-zinc-800 hover:text-orange-500"
+
+                      <div className="flex items-center gap-2">
+                        <Badge
+                          variant={
+                            product.stock === 0
+                              ? "destructive"
+                              : product.stock < 10
+                                ? "warning"
+                                : "default"
+                          }
                         >
-                          <Edit2 className="h-4 w-4" />
-                        </Button>
-                        <Button
-                          size="icon"
-                          variant="ghost"
-                          onClick={() => handleDeleteClick(product.id)}
-                          className="hover:bg-zinc-800 hover:text-red-500"
-                        >
-                          <Trash2 className="h-4 w-4" />
-                        </Button>
+                          {product.stock} u
+                        </Badge>
+                        <Badge variant={product.is_active ? "success" : "secondary"}>
+                          {product.is_active ? "Activo" : "Inactivo"}
+                        </Badge>
                       </div>
-                    </TableCell>
-                  </TableRow>
+                    </div>
+
+                    <div className="mt-3 grid grid-cols-2 gap-3">
+                      <div className="space-y-1">
+                        <p className="text-xs admin-text-muted">Categoría</p>
+                        <p className="text-sm admin-text-primary">{product.categories?.name || "Sin categoría"}</p>
+                      </div>
+                      <div className="space-y-1">
+                        <p className="text-xs admin-text-muted">Precio</p>
+                        <p className="text-sm font-bold admin-text-accent">{formatCLP(product.price)}</p>
+                      </div>
+                    </div>
+
+                    <div className="mt-4 flex justify-end gap-2">
+                      <Button
+                        size="icon"
+                        variant="ghost"
+                        onClick={() => handleEditProduct(product)}
+                        className="hover:bg-[color-mix(in_srgb,var(--theme-accent)_18%,transparent)] hover:text-[var(--theme-accent)]"
+                      >
+                        <Edit2 className="h-4 w-4" />
+                      </Button>
+                      <Button
+                        size="icon"
+                        variant="ghost"
+                        onClick={() => handleDeleteClick(product.id)}
+                        className="hover:bg-[color-mix(in_srgb,var(--admin-error)_18%,transparent)] hover:text-[var(--admin-error)]"
+                      >
+                        <Trash2 className="h-4 w-4" />
+                      </Button>
+                    </div>
+                  </div>
                 ))
               )}
-            </TableBody>
-          </Table>
+            </div>
+          </>
         )}
       </div>
 
       {/* Modal de formulario */}
       <Dialog open={isFormOpen} onOpenChange={setIsFormOpen}>
-        <DialogContent className="bg-white text-gray-900 border border-gray-200 w-[95vw] max-w-[900px] h-[95vh] max-h-[95vh] flex flex-col p-0 gap-0">
-          <DialogHeader className="border-b border-gray-200 p-4 sm:p-6 flex-shrink-0">
-            <DialogTitle className="text-gray-900 text-lg sm:text-xl font-semibold">
+        <DialogContent className="w-[95vw] max-w-[900px] h-[95vh] max-h-[95vh] flex flex-col p-0 gap-0">
+          <DialogHeader className="border-b border-[var(--theme-card-border)] p-4 sm:p-6 flex-shrink-0">
+            <DialogTitle className="admin-dialog-title text-lg sm:text-xl font-semibold">
               {selectedProduct ? "Editar Producto" : "Nuevo Producto"}
             </DialogTitle>
           </DialogHeader>
@@ -406,23 +481,23 @@ export default function ProductsPage() {
 
       {/* Diálogo de confirmación de eliminación */}
       <AlertDialog open={!!deleteProductId} onOpenChange={(open) => !open && setDeleteProductId(null)}>
-        <AlertDialogContent className="bg-zinc-900 text-zinc-200 border border-zinc-800">
+        <AlertDialogContent className="admin-dialog-content">
           <AlertDialogHeader>
-            <AlertDialogTitle>¿Eliminar este producto?</AlertDialogTitle>
-            <AlertDialogDescription className="text-zinc-400">
+            <AlertDialogTitle className="admin-dialog-title">¿Eliminar este producto?</AlertDialogTitle>
+            <AlertDialogDescription className="admin-text-muted">
               El producto será eliminado permanentemente.
               Si tiene pedidos asociados, verás un mensaje de error.
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
             <AlertDialogCancel
-              className="border-zinc-700 text-zinc-300 hover:bg-zinc-800 hover:text-white"
+              className="admin-alert-action-cancel"
               onClick={() => setDeleteProductId(null)}
             >
               Cancelar
             </AlertDialogCancel>
             <AlertDialogAction
-              className="bg-red-500 hover:bg-red-600 text-white"
+              className="admin-alert-action-primary"
               onClick={handleConfirmDelete}
               disabled={deleteMutation.isPending}
             >

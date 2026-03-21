@@ -31,7 +31,10 @@ function Tooltip({ children, label }: { children: React.ReactNode; label: string
   return (
     <div className="group relative flex items-center">
       {children}
-      <span className="pointer-events-none absolute left-full top-1/2 -translate-y-1/2 ml-2 z-10 hidden group-hover:block whitespace-nowrap rounded bg-zinc-800 px-2 py-1 text-xs text-white shadow-lg transition-all">
+      <span 
+        className="pointer-events-none absolute left-full top-1/2 -translate-y-1/2 ml-2 z-10 hidden group-hover:block whitespace-nowrap rounded px-2 py-1 text-xs text-white shadow-lg transition-all"
+        style={{ backgroundColor: 'var(--theme-sidebar-bg)' }}
+      >
         {label}
       </span>
     </div>
@@ -51,9 +54,9 @@ function MenuItem({ icon: Icon, label, path, isCollapsed, onClick, isActive }: M
       aria-label={label}
       tabIndex={0}
       className={({ isActive: active }) =>
-        `flex items-center ${isCollapsed ? 'justify-center px-3' : 'px-4'} py-3 rounded-xl transition-all duration-200 outline-none focus-visible:ring-2 focus-visible:ring-amber-500 ${active || isActive
-          ? 'bg-gradient-to-r from-amber-600 to-amber-700 text-white shadow-lg shadow-amber-500/25 transform scale-105'
-          : 'text-zinc-700 hover:text-amber-700 hover:bg-amber-50 hover:shadow-md'}`
+        `flex items-center admin-nav-link ${isCollapsed ? 'justify-center px-3' : 'px-4'} py-3 rounded-xl transition-all duration-200 outline-none focus-visible:ring-2 focus-visible:ring-offset-2 ${active || isActive
+          ? 'admin-nav-link-active'
+          : 'admin-nav-link-inactive'}`
       }
       onClick={onClick}
     >
@@ -72,7 +75,7 @@ function SubMenu({ icon: Icon, label, items, isCollapsed }: SubMenuProps) {
         aria-expanded={open}
         aria-label={label}
         tabIndex={0}
-        className={`flex items-center gap-3 px-4 py-3 w-full text-zinc-700 font-medium rounded-xl hover:bg-amber-50 hover:text-amber-700 transition-all duration-200 outline-none focus-visible:ring-2 focus-visible:ring-amber-500 ${isCollapsed ? 'justify-center' : ''}`}
+        className={`flex items-center gap-3 px-4 py-3 w-full font-medium rounded-xl transition-all duration-200 outline-none focus-visible:ring-2 focus-visible:ring-offset-2 admin-nav-link-inactive ${isCollapsed ? 'justify-center' : ''}`}
         onClick={() => setOpen((v) => !v)}
         onKeyDown={e => { if (e.key === 'Enter' || e.key === ' ') setOpen(v => !v); }}
       >
@@ -120,26 +123,26 @@ export const AdminPanel = () => {
 
   return (
     <nav
-      className={`h-full flex flex-col bg-gradient-to-b from-white to-stone-50 border-r border-stone-200 shadow-2xl overflow-y-auto transition-all duration-300 ${isCollapsed ? 'w-[4.5rem]' : 'w-[280px]'}`}
+      className={`admin-sidebar h-full flex flex-col border-r shadow-2xl overflow-y-auto transition-all duration-300 ${isCollapsed ? 'w-[4.5rem]' : 'w-[280px]'}`}
       aria-label="Menú principal del panel de administración"
       role="navigation"
     >
-      {/* Header del panel */}
-      <div className="flex items-center justify-between p-4 border-b border-stone-200 bg-gradient-to-r from-amber-600 to-amber-700">
+      {/* Header del panel — usa colores del tema */}
+      <div className="admin-sidebar-header flex items-center justify-between p-4 border-b">
         {!isCollapsed && (
           <div className="flex items-center gap-3">
-            <div className="w-8 h-8 bg-white rounded-lg flex items-center justify-center shadow-lg">
-              <span className="text-amber-600 font-bold text-lg">D</span>
+            <div className="admin-sidebar-logo w-8 h-8 rounded-lg flex items-center justify-center shadow-lg">
+              <span className="font-bold text-lg">D</span>
             </div>
             <div>
-              <h2 className="font-bold text-white text-base">Delicias de Faby</h2>
-              <p className="text-xs text-amber-100">Panel Admin</p>
+              <h2 className="font-bold text-base admin-sidebar-title">Delicias de Faby</h2>
+              <p className="text-xs opacity-90">Panel Admin</p>
             </div>
           </div>
         )}
         <button
           onClick={() => setIsCollapsed(!isCollapsed)}
-          className="p-2 rounded-lg text-white hover:bg-white/20 transition-colors"
+          className="p-2 rounded-lg hover:bg-white/20 transition-colors admin-sidebar-toggle"
           aria-label={isCollapsed ? 'Expandir menú' : 'Colapsar menú'}
         >
           <ChevronLeft className={`w-5 h-5 transition-transform duration-300 ${isCollapsed ? 'rotate-180' : ''}`} />
@@ -160,7 +163,7 @@ export const AdminPanel = () => {
       </div>
       
       {/* Footer con botón de logout */}
-      <div className="mt-auto border-t border-stone-200 p-4 bg-stone-50">
+      <div className="admin-sidebar-footer mt-auto border-t p-4">
         <button
           onClick={handleLogout}
           className={`flex items-center ${isCollapsed ? 'justify-center px-3' : 'px-4'} py-3 gap-3 w-full rounded-xl transition-all duration-200 text-red-600 hover:text-red-700 hover:bg-red-50 border border-red-200 outline-none focus-visible:ring-2 focus-visible:ring-red-500 hover:shadow-md`}

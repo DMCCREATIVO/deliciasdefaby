@@ -130,8 +130,8 @@ export default function OrdersPage() {
     <div className="container mx-auto p-6 max-w-7xl space-y-6">
       {/* Header con acciones */}
       <div>
-        <h2 className="text-3xl font-bold text-emerald-400">Gestión de Pedidos</h2>
-        <p className="text-sm text-slate-300 mt-1">
+          <h2 className="text-3xl font-bold admin-text-accent">Gestión de Pedidos</h2>
+          <p className="text-sm admin-text-muted mt-1">
           Administra y da seguimiento a todos los pedidos de la panadería
         </p>
       </div>
@@ -144,17 +144,17 @@ export default function OrdersPage() {
             placeholder="Buscar por cliente, email o ID..."
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
-            className="pl-9 bg-slate-800/50 border-slate-600 text-white focus-visible:ring-emerald-500 focus-visible:border-emerald-500"
+              className="admin-input pl-9 focus-visible:ring-[color-mix(in_srgb,var(--theme-accent)_30%,_transparent)]"
           />
         </div>
         <Select
           value={selectedStatus}
           onValueChange={(value) => setSelectedStatus(value as OrderStatus | "all")}
         >
-          <SelectTrigger className="w-[180px] bg-slate-800/50 border-slate-600 text-white focus:ring-emerald-500">
+          <SelectTrigger className="w-[180px] admin-input">
             <SelectValue placeholder="Estado" />
           </SelectTrigger>
-          <SelectContent className="bg-slate-800 border-slate-600">
+          <SelectContent>
             <SelectItem value="all">Todos los estados</SelectItem>
             <SelectItem value="pendiente">Pendientes</SelectItem>
             <SelectItem value="confirmado">Confirmados</SelectItem>
@@ -168,101 +168,159 @@ export default function OrdersPage() {
 
       {/* Estadísticas rápidas */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-6 gap-4">
-        <Card className="p-4 bg-gradient-to-br from-slate-800/80 to-slate-900/80 border-slate-600/50 hover:border-emerald-500/50 transition-colors">
-          <p className="text-sm text-slate-300">Pedidos Hoy</p>
-          <p className="text-2xl font-bold mt-1 text-emerald-400">{stats.today}</p>
+        <Card className="p-4 admin-card shadow-none">
+          <p className="text-sm text-[var(--theme-text-secondary)]">Pedidos Hoy</p>
+          <p className="text-2xl font-bold mt-1" style={{ color: 'var(--theme-accent)' }}>{stats.today}</p>
         </Card>
-        <Card className="p-4 bg-gradient-to-br from-slate-800/80 to-slate-900/80 border-slate-600/50 hover:border-yellow-500/50 transition-colors">
-          <p className="text-sm text-slate-300">Pendientes</p>
-          <p className="text-2xl font-bold mt-1 text-yellow-400">{stats.pendiente}</p>
+        <Card className="p-4 admin-card shadow-none">
+          <p className="text-sm admin-text-muted">Pendientes</p>
+          <p className="text-2xl font-bold mt-1" style={{ color: 'var(--theme-accent-secondary)' }}>{stats.pendiente}</p>
         </Card>
-        <Card className="p-4 bg-gradient-to-br from-slate-800/80 to-slate-900/80 border-slate-600/50 hover:border-blue-500/50 transition-colors">
-          <p className="text-sm text-slate-300">Confirmados</p>
-          <p className="text-2xl font-bold mt-1 text-blue-400">{stats.confirmado}</p>
+        <Card className="p-4 admin-card shadow-none">
+          <p className="text-sm admin-text-muted">Confirmados</p>
+          <p className="text-2xl font-bold mt-1" style={{ color: 'var(--theme-accent)' }}>{stats.confirmado}</p>
         </Card>
-        <Card className="p-4 bg-gradient-to-br from-slate-800/80 to-slate-900/80 border-slate-600/50 hover:border-orange-500/50 transition-colors">
-          <p className="text-sm text-slate-300">En Preparación</p>
-          <p className="text-2xl font-bold mt-1 text-orange-400">{stats.en_preparacion}</p>
+        <Card className="p-4 admin-card shadow-none">
+          <p className="text-sm admin-text-muted">En Preparación</p>
+          <p className="text-2xl font-bold mt-1" style={{ color: 'var(--theme-accent-secondary)' }}>{stats.en_preparacion}</p>
         </Card>
-        <Card className="p-4 bg-gradient-to-br from-slate-800/80 to-slate-900/80 border-slate-600/50 hover:border-purple-500/50 transition-colors">
-          <p className="text-sm text-slate-300">Listos</p>
-          <p className="text-2xl font-bold mt-1 text-purple-400">{stats.listo_para_entrega}</p>
+        <Card className="p-4 admin-card shadow-none">
+          <p className="text-sm admin-text-muted">Listos</p>
+          <p className="text-2xl font-bold mt-1" style={{ color: 'var(--theme-accent)' }}>{stats.listo_para_entrega}</p>
         </Card>
-        <Card className="p-4 bg-gradient-to-br from-slate-800/80 to-slate-900/80 border-slate-600/50 hover:border-green-500/50 transition-colors">
-          <p className="text-sm text-slate-300">Entregados</p>
-          <p className="text-2xl font-bold mt-1 text-green-400">{stats.entregado}</p>
+        <Card className="p-4 admin-card shadow-none">
+          <p className="text-sm admin-text-muted">Entregados</p>
+          <p className="text-2xl font-bold mt-1" style={{ color: 'var(--theme-accent)' }}>{stats.entregado}</p>
         </Card>
       </div>
       {/* Tabla de pedidos */}
-      <div className="rounded-lg border border-slate-600/50 overflow-hidden bg-gradient-to-br from-slate-800/50 to-slate-900/50">
+      <div className="rounded-lg border overflow-hidden admin-table-container">
         {isLoading ? (
           <div className="p-8 flex justify-center">
-            <Loader2 className="h-8 w-8 animate-spin text-emerald-500" />
+            <Loader2 className="h-8 w-8 animate-spin" style={{ color: 'var(--theme-accent)' }} />
           </div>
         ) : filteredOrders.length === 0 ? (
-          <div className="p-8 text-center text-slate-400">
+          <div className="p-8 text-center admin-text-muted">
             No se encontraron pedidos
           </div>
         ) : (
-          <Table>
-            <TableHeader>
-              <TableRow className="hover:bg-slate-800/50 border-slate-600/50">
-                <TableHead className="text-slate-300 font-semibold">ID Pedido</TableHead>
-                <TableHead className="text-slate-300 font-semibold">Cliente</TableHead>
-                <TableHead className="text-slate-300 font-semibold">Fecha</TableHead>
-                <TableHead className="text-slate-300 font-semibold">Total</TableHead>
-                <TableHead className="text-slate-300 font-semibold">Estado</TableHead>
-                <TableHead className="text-slate-300 font-semibold">Acciones</TableHead>
-              </TableRow>
-            </TableHeader>
-            <TableBody>
+          <>
+            <div className="hidden sm:block">
+              <Table>
+                <TableHeader>
+                  <TableRow className="admin-table-row">
+                    <TableHead className="admin-table-head">ID Pedido</TableHead>
+                    <TableHead className="admin-table-head">Cliente</TableHead>
+                    <TableHead className="admin-table-head">Fecha</TableHead>
+                    <TableHead className="admin-table-head">Total</TableHead>
+                    <TableHead className="admin-table-head">Estado</TableHead>
+                    <TableHead className="admin-table-head">Acciones</TableHead>
+                  </TableRow>
+                </TableHeader>
+                <TableBody>
+                  {filteredOrders.map((order) => (
+                    <TableRow key={order.id} className="admin-table-row">
+                      <TableCell className="font-mono text-sm font-bold admin-text-accent">#{order.id.slice(0, 8)}</TableCell>
+                      <TableCell>
+                        <div>
+                          <p className="font-bold text-lg" style={{ color: 'var(--theme-text-primary)' }}>{order.customer_name}</p>
+                          <p className="text-sm" style={{ color: 'var(--theme-accent)' }}>{order.customer_email}</p>
+                        </div>
+                      </TableCell>
+                      <TableCell className="admin-table-cell-muted">
+                        {format(new Date(order.created_at), "PPP", { locale: es })}
+                      </TableCell>
+                      <TableCell className="font-bold text-xl" style={{ color: 'var(--theme-accent)' }}>
+                        {formatCLP(order.total_amount)}
+                      </TableCell>
+                      <TableCell>
+                        <OrderStatusBadge status={order.status} />
+                      </TableCell>
+                      <TableCell>
+                        <div className="flex items-center gap-2">
+                          <Button
+                            variant="ghost"
+                            size="icon"
+                            onClick={() => handleViewDetails(order)}
+                            className="hover:bg-[color-mix(in_srgb,var(--theme-accent)_18%,transparent)] hover:text-[var(--theme-accent)] transition-colors"
+                          >
+                            <Eye className="h-4 w-4" />
+                          </Button>
+                          <OrderActions
+                            order={order}
+                            onStatusChange={(status: any) => handleStatusChange(order.id, status)}
+                            isUpdating={updateOrderMutation.isPending}
+                          />
+                        </div>
+                      </TableCell>
+                    </TableRow>
+                  ))}
+                </TableBody>
+              </Table>
+            </div>
+
+            <div className="sm:hidden p-3 space-y-3">
               {filteredOrders.map((order) => (
-                <TableRow key={order.id} className="hover:bg-slate-800/40 border-slate-600/30 transition-colors">
-                  <TableCell className="font-mono text-sm text-emerald-400 font-bold">#{order.id.slice(0, 8)}</TableCell>
-                  <TableCell>
-                    <div>
-                      <p className="font-bold text-white text-lg">{order.customer_name}</p>
-                      <p className="text-sm text-emerald-300">{order.customer_email}</p>
+                <div key={order.id} className="admin-card shadow-none p-4">
+                  <div className="flex items-start justify-between gap-3">
+                    <div className="min-w-0">
+                      <div className="font-mono text-sm font-bold admin-text-accent">
+                        #{order.id.slice(0, 8)}
+                      </div>
+                      <div className="mt-1">
+                        <p className="font-bold" style={{ color: 'var(--theme-text-primary)' }}>
+                          {order.customer_name}
+                        </p>
+                        <p className="text-sm" style={{ color: 'var(--theme-accent)' }}>
+                          {order.customer_email}
+                        </p>
+                      </div>
                     </div>
-                  </TableCell>
-                  <TableCell className="text-slate-200">
-                    {format(new Date(order.created_at), "PPP", { locale: es })}
-                  </TableCell>
-                  <TableCell className="font-bold text-xl text-emerald-300">
-                    {formatCLP(order.total_amount)}
-                  </TableCell>
-                  <TableCell>
                     <OrderStatusBadge status={order.status} />
-                  </TableCell>
-                  <TableCell>
-                    <div className="flex items-center gap-2">
-                      <Button
-                        variant="ghost"
-                        size="icon"
-                        onClick={() => handleViewDetails(order)}
-                        className="hover:bg-emerald-500/20 hover:text-emerald-400 transition-colors"
-                      >
-                        <Eye className="h-4 w-4" />
-                      </Button>
-                      <OrderActions
-                        order={order}
-                        onStatusChange={(status: any) => handleStatusChange(order.id, status)}
-                        isUpdating={updateOrderMutation.isPending}
-                      />
+                  </div>
+
+                  <div className="mt-3 grid grid-cols-2 gap-3">
+                    <div className="space-y-1">
+                      <p className="text-xs admin-text-muted">Fecha</p>
+                      <p className="text-sm admin-text-primary">
+                        {format(new Date(order.created_at), "PPP", { locale: es })}
+                      </p>
                     </div>
-                  </TableCell>
-                </TableRow>
+                    <div className="space-y-1">
+                      <p className="text-xs admin-text-muted">Total</p>
+                      <p className="text-sm font-bold" style={{ color: 'var(--theme-accent)' }}>
+                        {formatCLP(order.total_amount)}
+                      </p>
+                    </div>
+                  </div>
+
+                  <div className="mt-4 flex items-center justify-end gap-2">
+                    <Button
+                      variant="ghost"
+                      size="icon"
+                      onClick={() => handleViewDetails(order)}
+                      className="hover:bg-[color-mix(in_srgb,var(--theme-accent)_18%,transparent)] hover:text-[var(--theme-accent)] transition-colors"
+                    >
+                      <Eye className="h-4 w-4" />
+                    </Button>
+                    <OrderActions
+                      order={order}
+                      onStatusChange={(status: any) => handleStatusChange(order.id, status)}
+                      isUpdating={updateOrderMutation.isPending}
+                    />
+                  </div>
+                </div>
               ))}
-            </TableBody>
-          </Table>
+            </div>
+          </>
         )}
       </div>
 
       {/* Modal de detalles del pedido */}
       <Dialog open={isDetailsOpen} onOpenChange={setIsDetailsOpen}>
-        <DialogContent className="max-w-3xl bg-slate-900 border-slate-600">
+        <DialogContent className="max-w-3xl">
           <DialogHeader>
-            <DialogTitle className="text-emerald-400">Detalles del Pedido</DialogTitle>
+            <DialogTitle className="admin-dialog-title">Detalles del Pedido</DialogTitle>
           </DialogHeader>
           {selectedOrder && (
             <div className="space-y-6">

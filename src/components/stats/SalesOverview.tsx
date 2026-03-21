@@ -24,53 +24,101 @@ export const SalesOverview = ({ orders, className }: SalesOverviewProps) => {
 
   return (
     <div className={`grid gap-4 md:grid-cols-2 lg:grid-cols-4 ${className}`}>
-      <Card className="p-4 bg-gradient-to-br from-purple-50 to-purple-100 border-purple-200 shadow-md hover:shadow-lg transition-all duration-300">
+      <Card className="p-4 admin-card shadow-none">
         <div className="flex items-center justify-between">
           <div>
-            <p className="text-sm text-purple-600 font-medium">Pedidos de Invitados</p>
-            <p className="text-2xl font-bold mt-1 text-purple-800">{guestStats.count}</p>
+            <p
+              className="text-sm font-medium"
+              style={{ color: 'var(--theme-accent-secondary)' }}
+            >
+              Pedidos de Invitados
+            </p>
+            <p
+              className="text-2xl font-bold mt-1"
+              style={{ color: 'var(--theme-accent-secondary)' }}
+            >
+              {guestStats.count}
+            </p>
           </div>
-          <div className="p-3 bg-purple-500 rounded-full">
+          <div
+            className="p-3 rounded-full"
+            style={{ backgroundColor: 'var(--theme-accent-secondary)' }}
+          >
             <Users className="w-6 h-6 text-white" />
           </div>
         </div>
       </Card>
       
-      <Card className="p-4 bg-gradient-to-br from-emerald-50 to-emerald-100 border-emerald-200 shadow-md hover:shadow-lg transition-all duration-300">
+      <Card className="p-4 admin-card shadow-none">
         <div className="flex items-center justify-between">
           <div>
-            <p className="text-sm text-emerald-600 font-medium">Pedidos de Clientes</p>
-            <p className="text-2xl font-bold mt-1 text-emerald-800">{registeredStats.count}</p>
+            <p
+              className="text-sm font-medium"
+              style={{ color: 'var(--theme-accent)' }}
+            >
+              Pedidos de Clientes
+            </p>
+            <p
+              className="text-2xl font-bold mt-1"
+              style={{ color: 'var(--theme-accent)' }}
+            >
+              {registeredStats.count}
+            </p>
           </div>
-          <div className="p-3 bg-emerald-500 rounded-full">
+          <div
+            className="p-3 rounded-full"
+            style={{ backgroundColor: 'var(--theme-accent)' }}
+          >
             <UserCheck className="w-6 h-6 text-white" />
           </div>
         </div>
       </Card>
       
-      <Card className="p-4 bg-gradient-to-br from-indigo-50 to-indigo-100 border-indigo-200 shadow-md hover:shadow-lg transition-all duration-300">
+      <Card className="p-4 admin-card shadow-none">
         <div className="flex items-center justify-between">
           <div>
-            <p className="text-sm text-indigo-600 font-medium">Total Ventas Invitados</p>
-            <p className="text-2xl font-bold mt-1 text-indigo-800">
+            <p
+              className="text-sm font-medium"
+              style={{ color: 'var(--theme-accent-secondary)' }}
+            >
+              Total Ventas Invitados
+            </p>
+            <p
+              className="text-2xl font-bold mt-1"
+              style={{ color: 'var(--theme-accent-secondary)' }}
+            >
               ${guestStats.total.toLocaleString()}
             </p>
           </div>
-          <div className="p-3 bg-indigo-500 rounded-full">
+          <div
+            className="p-3 rounded-full"
+            style={{ backgroundColor: 'var(--theme-accent-secondary)' }}
+          >
             <DollarSign className="w-6 h-6 text-white" />
           </div>
         </div>
       </Card>
       
-      <Card className="p-4 bg-gradient-to-br from-green-50 to-green-100 border-green-200 shadow-md hover:shadow-lg transition-all duration-300">
+      <Card className="p-4 admin-card shadow-none">
         <div className="flex items-center justify-between">
           <div>
-            <p className="text-sm text-green-600 font-medium">Total Ventas Clientes</p>
-            <p className="text-2xl font-bold mt-1 text-green-800">
+            <p
+              className="text-sm font-medium"
+              style={{ color: 'var(--theme-accent)' }}
+            >
+              Total Ventas Clientes
+            </p>
+            <p
+              className="text-2xl font-bold mt-1"
+              style={{ color: 'var(--theme-accent)' }}
+            >
               ${registeredStats.total.toLocaleString()}
             </p>
           </div>
-          <div className="p-3 bg-green-500 rounded-full">
+          <div
+            className="p-3 rounded-full"
+            style={{ backgroundColor: 'var(--theme-accent)' }}
+          >
             <TrendingUp className="w-6 h-6 text-white" />
           </div>
         </div>

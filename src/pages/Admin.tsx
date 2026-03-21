@@ -19,13 +19,13 @@ const Estadisticas = lazy(() => import('./admin/Estadisticas'))
 
 const Admin = () => {
   return (
-    <div className="admin-page min-h-screen bg-gradient-to-br from-stone-50 via-white to-amber-50/30 w-full flex">
-      {/* Menú lateral sin separación */}
-      <div className="h-screen">
+    <div className="admin-page min-h-screen w-full flex">
+      {/* Menú lateral */}
+      <div className="h-screen flex-shrink-0">
         <AdminPanel />
       </div>
-      {/* Contenido principal pegado al menú */}
-      <main className="flex-1 h-screen overflow-y-auto bg-gradient-to-br from-white via-stone-50/50 to-amber-50/20">
+      {/* Contenido principal */}
+      <main className="flex-1 h-screen overflow-y-auto admin-main-content">
         <div className="p-6">
           <Suspense fallback={
             <div className="flex items-center justify-center h-64">

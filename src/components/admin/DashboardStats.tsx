@@ -84,98 +84,100 @@ export const DashboardStats = () => {
   return (
     <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
       {/* Estadísticas de Invitados */}
-      <Card className="p-4 bg-gradient-to-br from-purple-50 to-purple-100 border-purple-200 shadow-md hover:shadow-lg transition-all duration-300">
+      <Card className="p-4 admin-card shadow-none">
         <div className="flex items-center justify-between">
           <div>
-            <p className="text-sm text-purple-600 font-medium">Pedidos de Invitados</p>
-            <p className="text-2xl font-bold mt-1 text-purple-800">{stats?.totalGuestOrders}</p>
-            <p className="text-xs text-purple-600 mt-1">Promedio: ${stats?.averageGuestOrderValue.toFixed(0)}</p>
+            <p className="text-sm font-medium" style={{ color: 'var(--theme-accent-secondary)' }}>Pedidos de Invitados</p>
+            <p className="text-2xl font-bold mt-1" style={{ color: 'var(--theme-accent-secondary)' }}>{stats?.totalGuestOrders}</p>
+            <p className="text-xs mt-1" style={{ color: 'var(--theme-accent-secondary)' }}>Promedio: ${stats?.averageGuestOrderValue.toFixed(0)}</p>
           </div>
-          <div className="p-3 bg-purple-500 rounded-full">
+          <div className="p-3 rounded-full" style={{ backgroundColor: 'var(--theme-accent-secondary)' }}>
             <Users className="w-6 h-6 text-white" />
           </div>
         </div>
       </Card>
 
-      <Card className="p-4 bg-gradient-to-br from-indigo-50 to-indigo-100 border-indigo-200 shadow-md hover:shadow-lg transition-all duration-300">
+      <Card className="p-4 admin-card shadow-none">
         <div className="flex items-center justify-between">
           <div>
-            <p className="text-sm text-indigo-600 font-medium">Ingresos de Invitados</p>
-            <p className="text-2xl font-bold mt-1 text-indigo-800">
-              ${stats?.totalGuestRevenue.toFixed(0)}
-            </p>
+            <p className="text-sm font-medium" style={{ color: 'var(--theme-accent-secondary)' }}>Ingresos de Invitados</p>
+            <p className="text-2xl font-bold mt-1" style={{ color: 'var(--theme-accent-secondary)' }}>${stats?.totalGuestRevenue.toFixed(0)}</p>
           </div>
-          <div className="p-3 bg-indigo-500 rounded-full">
+          <div className="p-3 rounded-full" style={{ backgroundColor: 'var(--theme-accent-secondary)' }}>
             <DollarSign className="w-6 h-6 text-white" />
           </div>
         </div>
       </Card>
 
       {/* Estadísticas de Usuarios Registrados */}
-      <Card className="p-4 bg-gradient-to-br from-emerald-50 to-emerald-100 border-emerald-200 shadow-md hover:shadow-lg transition-all duration-300">
+      <Card className="p-4 admin-card shadow-none">
         <div className="flex items-center justify-between">
           <div>
-            <p className="text-sm text-emerald-600 font-medium">Pedidos de Clientes</p>
-            <p className="text-2xl font-bold mt-1 text-emerald-800">{stats?.totalRegisteredOrders}</p>
-            <p className="text-xs text-emerald-600 mt-1">Promedio: ${stats?.averageRegisteredOrderValue.toFixed(0)}</p>
+            <p className="text-sm font-medium" style={{ color: 'var(--theme-accent)' }}>Pedidos de Clientes</p>
+            <p className="text-2xl font-bold mt-1" style={{ color: 'var(--theme-accent)' }}>{stats?.totalRegisteredOrders}</p>
+            <p className="text-xs mt-1" style={{ color: 'var(--theme-accent)' }}>Promedio: ${stats?.averageRegisteredOrderValue.toFixed(0)}</p>
           </div>
-          <div className="p-3 bg-emerald-500 rounded-full">
+          <div className="p-3 rounded-full" style={{ backgroundColor: 'var(--theme-accent)' }}>
             <UserCheck className="w-6 h-6 text-white" />
           </div>
         </div>
       </Card>
 
-      <Card className="p-4 bg-gradient-to-br from-green-50 to-green-100 border-green-200 shadow-md hover:shadow-lg transition-all duration-300">
+      <Card className="p-4 admin-card shadow-none">
         <div className="flex items-center justify-between">
           <div>
-            <p className="text-sm text-green-600 font-medium">Ingresos de Clientes</p>
-            <p className="text-2xl font-bold mt-1 text-green-800">
-              ${stats?.totalRegisteredRevenue.toFixed(0)}
-            </p>
+            <p className="text-sm font-medium" style={{ color: 'var(--theme-accent)' }}>Ingresos de Clientes</p>
+            <p className="text-2xl font-bold mt-1" style={{ color: 'var(--theme-accent)' }}>${stats?.totalRegisteredRevenue.toFixed(0)}</p>
           </div>
-          <div className="p-3 bg-green-500 rounded-full">
+          <div className="p-3 rounded-full" style={{ backgroundColor: 'var(--theme-accent)' }}>
             <DollarSign className="w-6 h-6 text-white" />
           </div>
         </div>
       </Card>
 
       {/* Productos */}
-      <Card className="p-4 bg-gradient-to-br from-blue-50 to-blue-100 border-blue-200 shadow-md hover:shadow-lg transition-all duration-300">
+      <Card className="p-4 admin-card shadow-none">
         <div className="flex items-center justify-between">
           <div>
-            <p className="text-sm text-blue-600 font-medium">Productos Activos</p>
-            <p className="text-2xl font-bold mt-1 text-blue-800">{stats?.totalProducts}</p>
+            <p className="text-sm font-medium" style={{ color: 'var(--theme-accent)' }}>Productos Activos</p>
+            <p className="text-2xl font-bold mt-1" style={{ color: 'var(--theme-accent)' }}>{stats?.totalProducts}</p>
           </div>
-          <div className="p-3 bg-blue-500 rounded-full">
+          <div className="p-3 rounded-full" style={{ backgroundColor: 'var(--theme-accent)' }}>
             <Package className="w-6 h-6 text-white" />
           </div>
         </div>
       </Card>
 
       {/* Gráfico de Productos por Categoría */}
-      <Card className="col-span-full bg-gradient-to-br from-slate-50 to-slate-100 border-slate-200 shadow-md">
-        <CardHeader>
-          <CardTitle className="text-slate-700 flex items-center gap-2">
-            <Package className="w-5 h-5 text-slate-600" />
+      <Card className="col-span-full admin-card shadow-none">
+        <CardHeader className="admin-card-header">
+          <CardTitle className="admin-text-accent flex items-center gap-2">
+            <Package className="w-5 h-5" />
             Productos por Categoría
           </CardTitle>
         </CardHeader>
         <CardContent className="h-[300px]">
           <ResponsiveContainer width="100%" height="100%">
             <BarChart data={chartData}>
-              <CartesianGrid strokeDasharray="3 3" stroke="#e2e8f0" />
-              <XAxis dataKey="name" stroke="#64748b" />
-              <YAxis stroke="#64748b" />
+              <CartesianGrid
+                strokeDasharray="3 3"
+                stroke="color-mix(in srgb, var(--theme-text-secondary) 45%, transparent)"
+              />
+              <XAxis
+                dataKey="name"
+                stroke="color-mix(in srgb, var(--theme-text-secondary) 55%, transparent)"
+              />
+              <YAxis stroke="color-mix(in srgb, var(--theme-text-secondary) 55%, transparent)" />
               <Tooltip
                 contentStyle={{
-                  backgroundColor: '#ffffff',
-                  border: '1px solid #e2e8f0',
+                  backgroundColor: 'var(--theme-card-bg)',
+                  border: `1px solid color-mix(in srgb, var(--theme-card-border) 80%, transparent)`,
                   borderRadius: '8px',
-                  color: '#1e293b',
+                  color: 'var(--theme-text-primary)',
                   boxShadow: '0 4px 6px -1px rgb(0 0 0 / 0.1)'
                 }}
               />
-              <Bar dataKey="value" fill="#3b82f6" radius={[4, 4, 0, 0]} />
+              <Bar dataKey="value" fill="var(--theme-accent-secondary, #C71585)" radius={[4, 4, 0, 0]} />
             </BarChart>
           </ResponsiveContainer>
         </CardContent>

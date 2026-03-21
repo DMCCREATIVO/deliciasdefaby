@@ -62,15 +62,15 @@ export function OrderActions({ order, onStatusChange, isUpdating }: OrderActions
   };
 
   const getStatusColor = (status: OrderStatus): string => {
-    const colors = {
-      pendiente: "text-yellow-400 hover:text-yellow-300",
-      confirmado: "text-blue-400 hover:text-blue-300",
-      en_preparacion: "text-orange-400 hover:text-orange-300",
-      listo_para_entrega: "text-purple-400 hover:text-purple-300",
-      entregado: "text-green-400 hover:text-green-300",
-      cancelado: "text-red-400 hover:text-red-300",
+    const colors: Record<OrderStatus, string> = {
+      pendiente: "text-[var(--theme-accent-secondary)] hover:text-[var(--theme-accent-secondary)]",
+      confirmado: "text-[var(--theme-accent)] hover:text-[var(--theme-accent)]",
+      en_preparacion: "text-[var(--theme-accent)] hover:text-[var(--theme-accent)]",
+      listo_para_entrega: "text-[var(--theme-accent-secondary)] hover:text-[var(--theme-accent-secondary)]",
+      entregado: "text-[var(--theme-accent)] hover:text-[var(--theme-accent)]",
+      cancelado: "text-[var(--admin-error)] hover:text-[var(--admin-error)]",
     };
-    return colors[status];
+    return colors[status] || "";
   };
 
   const getStatusDescription = (status: OrderStatus): string => {
@@ -89,7 +89,7 @@ export function OrderActions({ order, onStatusChange, isUpdating }: OrderActions
 
   if (availableActions.length === 0) {
     return (
-      <Button variant="ghost" size="sm" disabled className="text-slate-400">
+      <Button variant="ghost" size="sm" disabled className="admin-text-muted">
         Sin acciones
       </Button>
     );
@@ -100,7 +100,7 @@ export function OrderActions({ order, onStatusChange, isUpdating }: OrderActions
       <DropdownMenuTrigger asChild>
         <Button
           variant="ghost"
-          className="h-8 w-8 p-0 hover:bg-emerald-500/20 hover:text-emerald-400 transition-colors"
+          className="h-8 w-8 p-0 hover:bg-[color-mix(in_srgb,var(--theme-accent)_18%,transparent)] hover:text-[var(--theme-accent)] transition-colors"
           disabled={isUpdating}
         >
           <span className="sr-only">Cambiar estado del pedido</span>
@@ -109,9 +109,9 @@ export function OrderActions({ order, onStatusChange, isUpdating }: OrderActions
       </DropdownMenuTrigger>
       <DropdownMenuContent
         align="end"
-        className="bg-slate-800 border-slate-600 min-w-[250px]"
+        className="min-w-[250px]"
       >
-        <div className="px-2 py-1 text-xs text-slate-400 border-b border-slate-600 mb-1">
+        <div className="px-2 py-1 text-xs admin-text-muted border-b admin-border-light mb-1">
           Estado actual: {getStatusDescription(order.status as OrderStatus)}
         </div>
         {availableActions.map((action) => (
@@ -119,7 +119,7 @@ export function OrderActions({ order, onStatusChange, isUpdating }: OrderActions
             key={action}
             onClick={() => onStatusChange(action)}
             disabled={isUpdating}
-            className={`flex items-center hover:bg-slate-700 focus:bg-slate-700 ${getStatusColor(action)} cursor-pointer py-2 px-3`}
+            className={`flex items-center hover:bg-[color-mix(in_srgb,var(--theme-accent)_15%,transparent)] focus:bg-[color-mix(in_srgb,var(--theme-accent)_15%,transparent)] ${getStatusColor(action)} cursor-pointer py-2 px-3`}
           >
             {getStatusIcon(action)}
             <div className="flex flex-col">

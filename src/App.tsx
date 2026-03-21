@@ -16,6 +16,7 @@ import AboutUs from "@/pages/AboutUs";
 import { AuthProvider } from "@/context/AuthContext";
 import { SystemProvider } from "@/context/SystemContext";
 import { CartProvider } from "@/context/CartContext";
+import { ThemeProvider } from "@/context/ThemeContext";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
@@ -27,6 +28,7 @@ const queryClient = new QueryClient();
 function App() {
   return (
     <QueryClientProvider client={queryClient}>
+      <ThemeProvider>
       <SystemProvider>
         <AuthProvider>
           <CartProvider>
@@ -55,6 +57,7 @@ function App() {
           </CartProvider>
         </AuthProvider>
       </SystemProvider>
+      </ThemeProvider>
     </QueryClientProvider>
   );
 }

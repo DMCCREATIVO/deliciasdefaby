@@ -1,6 +1,6 @@
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
-import { Plus, Minus, Info } from "lucide-react";
+import { Plus, Minus } from "lucide-react";
 import { useCart } from "@/context/CartContext";
 import { useNavigate } from "react-router-dom";
 import { Badge } from "@/components/ui/badge";
@@ -16,18 +16,22 @@ interface ProductCardProps {
   weight?: string;
   category?: string;
   isFeatured?: boolean;
+  loading?: "lazy" | "eager";
+  decoding?: "async" | "sync" | "auto";
 }
 
-export const ProductCard = ({ 
-  id, 
-  title, 
-  description, 
-  shortDescription, 
-  price, 
-  imageUrl, 
-  weight, 
+export const ProductCard = ({
+  id,
+  title,
+  description,
+  shortDescription,
+  price,
+  imageUrl,
+  weight,
   category,
-  isFeatured 
+  isFeatured,
+  loading = "lazy",
+  decoding = "async",
 }: ProductCardProps) => {
   const navigate = useNavigate();
   const { addToCart, updateQuantity, items } = useCart();
@@ -35,8 +39,8 @@ export const ProductCard = ({
   const quantity = cartItem?.quantity || 0;
 
   return (
-    <Card 
-      className="group w-full bg-white/95 backdrop-blur-sm border border-brand-beige hover:border-brand-cafe/50 transition-all duration-500 hover:shadow-xl hover:shadow-brand-cafe/10 cursor-pointer rounded-lg overflow-hidden" 
+    <Card
+      className="themed-card group w-full bg-white/95 backdrop-blur-sm border transition-all duration-500 hover:shadow-xl cursor-pointer rounded-lg overflow-hidden"
       onClick={() => navigate(`/product/${id}`)}
     >
       <CardHeader className="relative overflow-hidden p-0">
@@ -44,43 +48,55 @@ export const ProductCard = ({
           <img
             src={imageUrl}
             alt={title}
+            loading={loading}
+            decoding={decoding}
             className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
           />
           <div className="absolute inset-0 bg-gradient-to-t from-black/40 to-transparent opacity-80 group-hover:opacity-100 transition-opacity duration-500" />
         </div>
         {category && (
-          <Badge variant="secondary" className="absolute top-3 left-3 bg-brand-cafe/90 hover:bg-brand-cafe text-white border-none text-xs uppercase tracking-wider font-medium px-3 py-1 shadow-md transform transition-transform duration-300 group-hover:scale-105">
+          <Badge
+            variant="secondary"
+            className="themed-card-badge absolute top-3 left-3 border-none text-xs uppercase tracking-wider font-medium px-3 py-1 shadow-md transform transition-transform duration-300 group-hover:scale-105"
+          >
             {category}
           </Badge>
         )}
         {isFeatured && (
-          <Badge variant="secondary" className="absolute bottom-3 right-3 bg-brand-accent/90 hover:bg-brand-accent text-brand-cafe border-none text-xs uppercase tracking-wider font-medium px-3 py-1 shadow-md transform transition-transform duration-300 group-hover:scale-105">
+          <Badge
+            variant="secondary"
+            className="themed-featured-badge absolute bottom-2 right-2 sm:bottom-3 sm:right-3 border-none text-[10px] sm:text-xs uppercase tracking-wider font-medium px-2 py-0.5 sm:px-3 sm:py-1 shadow-md"
+          >
             Destacado
           </Badge>
         )}
       </CardHeader>
-      <CardContent className="space-y-3 p-6">
+
+      <CardContent className="space-y-3 p-4 sm:p-6">
         <div className="flex flex-col gap-2">
-          <CardTitle className="text-xl font-bold text-brand-cafe group-hover:text-brand-brown transition-colors duration-300">
+          <CardTitle className="themed-card-title text-lg sm:text-xl font-bold transition-colors duration-300">
             {title}
           </CardTitle>
-          <CardDescription className="text-brand-cafe/70 line-clamp-2 text-base">
+          <CardDescription className="text-sm sm:text-base line-clamp-2 opacity-70">
             {shortDescription || description}
           </CardDescription>
-          <div className="flex items-center justify-between mt-3">
-            <span className="text-2xl font-bold text-brand-cafe group-hover:text-brand-brown transition-colors duration-300">{formatCLP(price)}</span>
-            {weight && <p className="text-sm text-brand-cafe/60 italic">{weight}</p>}
+          <div className="flex items-center justify-between mt-2">
+            <span className="themed-card-price text-xl sm:text-2xl font-bold transition-colors duration-300">
+              {formatCLP(price)}
+            </span>
+            {weight && <p className="text-xs sm:text-sm italic opacity-60">{weight}</p>}
           </div>
         </div>
       </CardContent>
-      <CardFooter className="p-6 pt-0">
+
+      <CardFooter className="p-4 sm:p-6 pt-0">
         {quantity === 0 ? (
           <Button
             onClick={(e) => {
               e.stopPropagation();
               addToCart(id, title, price);
             }}
-            className="w-full bg-brand-cafe hover:bg-brand-brown text-white transition-all duration-500 text-lg py-6 shadow-lg hover:shadow-xl hover:shadow-brand-cafe/20 transform hover:-translate-y-1 rounded-md font-semibold"
+            className="themed-card-btn w-full text-base sm:text-lg py-5 sm:py-6 shadow-lg rounded-md font-semibold border-0"
           >
             Agregar al carrito
           </Button>
@@ -89,25 +105,27 @@ export const ProductCard = ({
             <Button
               variant="outline"
               size="icon"
-              className="border-brand-cafe/30 hover:bg-brand-cafe/10 hover:border-brand-cafe h-12 w-12 rounded-full transition-all duration-300 hover:shadow-md"
+              className="themed-card-btn-outline h-11 w-11 sm:h-12 sm:w-12 rounded-full transition-all duration-300"
               onClick={(e) => {
                 e.stopPropagation();
                 updateQuantity(id, quantity - 1);
               }}
             >
-              <Minus className="w-5 h-5 text-brand-cafe" />
+              <Minus className="w-4 h-4 sm:w-5 sm:h-5" />
             </Button>
-            <span className="mx-4 font-medium text-xl text-brand-cafe">{quantity}</span>
+            <span className="mx-3 sm:mx-4 font-medium text-lg sm:text-xl themed-card-price">
+              {quantity}
+            </span>
             <Button
               variant="outline"
               size="icon"
-              className="border-brand-cafe/30 hover:bg-brand-cafe/10 hover:border-brand-cafe h-12 w-12 rounded-full transition-all duration-300 hover:shadow-md"
+              className="themed-card-btn-outline h-11 w-11 sm:h-12 sm:w-12 rounded-full transition-all duration-300"
               onClick={(e) => {
                 e.stopPropagation();
                 updateQuantity(id, quantity + 1);
               }}
             >
-              <Plus className="w-5 h-5 text-brand-cafe" />
+              <Plus className="w-4 h-4 sm:w-5 sm:h-5" />
             </Button>
           </div>
         )}

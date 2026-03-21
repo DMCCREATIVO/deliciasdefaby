@@ -158,30 +158,30 @@ export const Testimonials = () => {
   };
 
   return (
-    <section className="w-full py-20 bg-gradient-to-b from-background to-brand-beige/20 relative overflow-hidden">
-      <div className="absolute top-0 left-0 w-full h-64 bg-gradient-to-b from-brand-cafe/5 to-transparent pointer-events-none" />
-      <div className="absolute -top-24 -left-24 w-48 h-48 rounded-full bg-brand-cafe/10 blur-3xl" />
-      <div className="absolute -bottom-24 -right-24 w-48 h-48 rounded-full bg-brand-brown/10 blur-3xl" />
+    <section className="themed-testimonials-section w-full py-12 sm:py-16 md:py-20 relative overflow-hidden">
+      <div className="absolute top-0 left-0 w-full h-48 sm:h-64 bg-gradient-to-b from-[var(--theme-accent)]/5 to-transparent pointer-events-none" />
+      <div className="absolute -top-24 -left-24 w-40 sm:w-48 h-40 sm:h-48 rounded-full opacity-30 blur-3xl" style={{ backgroundColor: 'var(--theme-accent)' }} />
+      <div className="absolute -bottom-24 -right-24 w-40 sm:w-48 h-40 sm:h-48 rounded-full opacity-20 blur-3xl" style={{ backgroundColor: 'var(--theme-accent-secondary)' }} />
 
-      <div className="container mx-auto px-4 relative z-10">
+      <div className="container mx-auto px-4 sm:px-6 relative z-10">
         <div className="max-w-4xl mx-auto">
-          <div className="text-center mb-16">
-            <h2 className="text-3xl md:text-4xl font-bold mb-6 text-brand-cafe">
+          <div className="text-center mb-10 sm:mb-12 md:mb-16">
+            <h2 className="themed-section-title text-2xl sm:text-3xl md:text-4xl font-bold mb-4 sm:mb-6">
               Lo que dicen nuestros clientes
             </h2>
-            <div className="w-24 h-1 bg-gradient-to-r from-brand-cafe to-brand-brown rounded-full mx-auto"></div>
-            <p className="mt-4 text-lg text-brand-cafe/70 max-w-lg mx-auto">
+            <div className="w-16 sm:w-24 h-1 rounded-full mx-auto mb-3 sm:mb-4" style={{ background: `linear-gradient(to right, var(--theme-accent), var(--theme-accent-secondary))` }} />
+            <p className="themed-section-subtitle text-sm sm:text-base md:text-lg max-w-lg mx-auto px-2">
               Descubre por qué nuestros clientes nos eligen una y otra vez para sus momentos especiales
             </p>
           </div>
 
           {isLoading ? (
-            <div className="flex justify-center items-center h-64">
-              <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-brand-cafe"></div>
+            <div className="flex justify-center items-center h-48 sm:h-64">
+              <div className="animate-spin rounded-full h-10 w-10 sm:h-12 sm:w-12 border-2 border-[var(--theme-accent)]/30 border-t-[var(--theme-accent)]"></div>
             </div>
           ) : (
             <>
-              <div className="relative px-12">
+              <div className="relative px-8 sm:px-10 md:px-12">
                 <Carousel
                   opts={{
                     align: "start",
@@ -197,50 +197,47 @@ export const Testimonials = () => {
                         const displayText = isExpanded ? testimonial.comment : truncateText(testimonial.comment);
 
                         return (
-                          <CarouselItem key={index} className="md:basis-1/2 lg:basis-1/3 pl-4">
-                            <div className="h-full">
-                              <Card className="h-80 bg-white/95 backdrop-blur-sm border border-brand-beige hover:border-brand-cafe/50 transition-all duration-500 hover:shadow-xl hover:shadow-brand-cafe/10 rounded-lg overflow-hidden flex flex-col">
-                                {/* Header con avatar y nombre - altura fija */}
-                                <CardHeader className="flex flex-row items-center space-x-4 p-4 flex-shrink-0">
-                                  <Avatar className="h-12 w-12 ring-2 ring-brand-cafe/20">
+                          <CarouselItem key={index} className="basis-full sm:basis-[85%] md:basis-1/2 lg:basis-1/3 pl-2 sm:pl-4">
+                            <div className="h-full min-h-[280px] sm:min-h-[320px]">
+                              <Card className="themed-testimonial-card h-full min-h-[280px] sm:h-80 backdrop-blur-sm border transition-all duration-500 hover:shadow-xl rounded-lg overflow-hidden flex flex-col">
+                                <CardHeader className="flex flex-row items-center space-x-3 sm:space-x-4 p-3 sm:p-4 flex-shrink-0">
+                                  <Avatar className="h-10 w-10 sm:h-12 sm:w-12 border-2 shrink-0 themed-testimonial-avatar-ring">
                                     <AvatarImage src={testimonial.avatar} alt={testimonial.name} />
-                                    <AvatarFallback className="bg-gradient-to-br from-brand-cafe to-brand-brown text-white font-bold text-sm">
+                                    <AvatarFallback className="text-white font-bold text-sm" style={{ background: `linear-gradient(135deg, var(--theme-accent), var(--theme-accent-secondary))` }}>
                                       {testimonial.name[0]}
                                     </AvatarFallback>
                                   </Avatar>
                                   <div className="flex-1 min-w-0">
-                                    <CardTitle className="text-base font-bold text-brand-cafe truncate">
+                                    <CardTitle className="themed-feature-title text-sm sm:text-base font-bold truncate">
                                       {testimonial.name}
                                     </CardTitle>
-                                    <div className="flex space-x-1 mt-1">
+                                    <div className="flex space-x-0.5 sm:space-x-1 mt-1">
                                       {Array.from({ length: 5 }).map((_, i) => (
                                         <Star
                                           key={i}
-                                          className={`w-3 h-3 ${i < testimonial.rating ? 'fill-yellow-400 text-yellow-400' : 'text-gray-300'}`}
+                                          className={`w-3 h-3 ${i < testimonial.rating ? 'themed-testimonial-star fill-current' : 'opacity-25'}`}
                                         />
                                       ))}
                                     </div>
                                   </div>
-                                  <Quote className="w-5 h-5 text-brand-cafe/30 flex-shrink-0" />
+                                  <Quote className="w-4 h-4 sm:w-5 sm:h-5 opacity-30 flex-shrink-0 themed-testimonial-accent" />
                                 </CardHeader>
 
-                                {/* Contenido del comentario - área expandible */}
-                                <CardContent className="flex-1 flex flex-col justify-between p-4 pt-0">
+                                <CardContent className="flex-1 flex flex-col justify-between p-3 sm:p-4 pt-0">
                                   <div className="flex-1">
-                                    <p className="text-brand-cafe/80 leading-relaxed text-sm italic">
+                                    <p className="themed-feature-text leading-relaxed text-xs sm:text-sm italic">
                                       "{displayText}"
                                     </p>
                                   </div>
 
-                                  {/* Botón de expandir si es necesario */}
                                   {needsTruncation && (
-                                    <div className="mt-3 pt-3 border-t border-brand-beige">
+                                    <div className="mt-3 pt-3 border-t themed-footer-border">
                                       <button
                                         onClick={(e) => {
                                           e.stopPropagation();
                                           toggleExpanded(testimonial.id);
                                         }}
-                                        className="text-brand-cafe hover:text-brand-brown text-xs font-medium transition-colors duration-300 flex items-center gap-1"
+                                        className="themed-page-accent hover:opacity-80 text-xs font-medium transition-colors duration-300 flex items-center gap-1 py-2"
                                       >
                                         {isExpanded ? 'Ver menos' : 'Leer más'}
                                         <ArrowRight className={`w-3 h-3 transition-transform duration-300 ${isExpanded ? 'rotate-90' : ''}`} />
@@ -255,33 +252,33 @@ export const Testimonials = () => {
                       })}
                     </CarouselContent>
                   </div>
-                  <div className="absolute left-0 right-0 top-1/2 -translate-y-1/2 flex justify-between pointer-events-none">
+                  <div className="absolute left-0 right-0 top-1/2 -translate-y-1/2 flex justify-between pointer-events-none px-1 sm:px-2">
                     <div className="pointer-events-auto">
-                      <CarouselPrevious className="bg-white/90 hover:bg-white border-brand-cafe/20 hover:border-brand-cafe/50 hover:bg-brand-cafe/10 shadow-lg hover:shadow-xl transition-all duration-300" />
+                      <CarouselPrevious className="h-9 w-9 sm:h-10 sm:w-10 bg-[var(--theme-card-bg)]/95 hover:bg-[var(--theme-card-bg)] border-[var(--theme-card-border)] hover:border-[var(--theme-accent)] shadow-lg transition-all duration-300" />
                     </div>
                     <div className="pointer-events-auto">
-                      <CarouselNext className="bg-white/90 hover:bg-white border-brand-cafe/20 hover:border-brand-cafe/50 hover:bg-brand-cafe/10 shadow-lg hover:shadow-xl transition-all duration-300" />
+                      <CarouselNext className="h-9 w-9 sm:h-10 sm:w-10 bg-[var(--theme-card-bg)]/95 hover:bg-[var(--theme-card-bg)] border-[var(--theme-card-border)] hover:border-[var(--theme-accent)] shadow-lg transition-all duration-300" />
                     </div>
                   </div>
                 </Carousel>
               </div>
 
-              <div className="mt-16 text-center">
+              <div className="mt-10 sm:mt-12 md:mt-16 text-center px-2">
                 {!showForm ? (
                   <Button
                     onClick={() => setShowForm(true)}
-                    className="bg-brand-cafe hover:bg-brand-brown text-white font-semibold px-8 py-6 rounded-full shadow-lg hover:shadow-xl transform hover:-translate-y-1 transition-all duration-500"
+                    className="themed-btn-primary font-semibold px-6 sm:px-8 py-5 sm:py-6 rounded-full shadow-lg transition-all duration-300 w-full sm:w-auto max-w-xs mx-auto"
                   >
                     Compartir tu Experiencia
                   </Button>
                 ) : (
-                  <div className="max-w-md mx-auto bg-white/90 backdrop-blur-sm p-8 rounded-2xl border border-brand-cafe/20 shadow-xl">
-                    <h3 className="text-xl font-bold text-brand-cafe mb-4">Tu opinión es importante</h3>
+                  <div className="max-w-md mx-auto themed-card backdrop-blur-sm p-6 sm:p-8 rounded-2xl border shadow-xl">
+                    <h3 className="themed-feature-title text-lg sm:text-xl font-bold mb-4">Tu opinión es importante</h3>
                     <TestimonialForm onSubmit={handleTestimonialSubmit} />
                     <Button
                       onClick={() => setShowForm(false)}
                       variant="outline"
-                      className="mt-4 w-full border-brand-cafe/20 hover:border-brand-cafe/50 hover:bg-brand-cafe/5"
+                      className="themed-card-btn-outline mt-4 w-full"
                     >
                       Cancelar
                     </Button>

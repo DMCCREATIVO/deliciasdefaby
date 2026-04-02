@@ -1,4 +1,4 @@
-import React, { createContext, useContext, useState, useEffect, useCallback } from 'react';
+import React, { createContext, useContext, useState, useEffect, useCallback, useRef } from 'react';
 import { pb } from '@/lib/pocketbase/client';
 import { toast } from 'sonner';
 
@@ -303,6 +303,7 @@ export const ThemeProvider: React.FC<{ children: React.ReactNode }> = ({ childre
   const [themes, setThemes] = useState<Theme[]>(FALLBACK_THEMES);
   const [currentTheme, setCurrentTheme] = useState<Theme | null>(null);
   const [isLoading, setIsLoading] = useState(false);
+  const themesCollectionMissingRef = useRef(false);
 
   const applyColorsToRoot = (colors: ThemeColors) => {
     const root = document.documentElement;
@@ -372,6 +373,7 @@ export const ThemeProvider: React.FC<{ children: React.ReactNode }> = ({ childre
   // Intentar cargar desde PocketBase (solo si el usuario está autenticado)
   const loadFromPocketBase = useCallback(async () => {
     if (!pb.authStore.isValid) return;
+    if (themesCollectionMissingRef.current) return;
     try {
       setIsLoading(true);
       const records = await pb.collection('themes').getFullList<Theme>({ sort: 'sort_order' });
@@ -379,7 +381,10 @@ export const ThemeProvider: React.FC<{ children: React.ReactNode }> = ({ childre
         setThemes(records);
         pickAndApplyTheme(records);
       }
-    } catch {
+    } catch (error: any) {
+      if (error?.status === 404) {
+        themesCollectionMissingRef.current = true;
+      }
       // Silently fail — ya tenemos los fallback themes cargados
     } finally {
       setIsLoading(false);

@@ -1,7 +1,7 @@
 import { pb } from '../pocketbase/client';
 import type { Category, CategoryService } from './types';
 
-const mapPocketbaseToCategory = (record: any): Category => ({
+export const mapPocketbaseToCategory = (record: any): Category => ({
     id: record.id,
     name: record.name,
     description: record.description || null,
@@ -18,6 +18,8 @@ export const pocketbaseCategoryService: CategoryService = {
         try {
             const records = await pb.collection('categories').getFullList({
                 sort: 'name',
+                // Ocultar categorías desactivadas (p. ej. tras "eliminar" = soft delete)
+                filter: 'is_active = true || is_active = null',
             });
             return records.map(mapPocketbaseToCategory);
         } catch (error: any) {
@@ -40,13 +42,16 @@ export const pocketbaseCategoryService: CategoryService = {
 
     async create(categoryData: Partial<Category>): Promise<Category> {
         try {
-            const record = await pb.collection('categories').create({
+            const payload: Record<string, unknown> = {
                 name: categoryData.name,
-                description: categoryData.description,
-                slug: categoryData.slug,
+                description: categoryData.description ?? '',
                 is_active: categoryData.is_active ?? true,
-                sort_order: categoryData.sort_order || 0,
-            });
+                sort_order: categoryData.sort_order ?? 0,
+            };
+            if (categoryData.slug !== undefined && categoryData.slug !== '') {
+                payload.slug = categoryData.slug;
+            }
+            const record = await pb.collection('categories').create(payload);
             return mapPocketbaseToCategory(record);
         } catch (error: any) {
             console.error('Error creating category:', error);
@@ -58,13 +63,14 @@ export const pocketbaseCategoryService: CategoryService = {
         if (!id) throw new Error('ID es requerido');
 
         try {
-            const record = await pb.collection('categories').update(id, {
-                name: categoryData.name,
-                description: categoryData.description,
-                slug: categoryData.slug,
-                is_active: categoryData.is_active,
-                sort_order: categoryData.sort_order,
-            });
+            const payload: Record<string, unknown> = {};
+            if (categoryData.name !== undefined) payload.name = categoryData.name;
+            if (categoryData.description !== undefined) payload.description = categoryData.description;
+            if (categoryData.slug !== undefined) payload.slug = categoryData.slug;
+            if (categoryData.is_active !== undefined) payload.is_active = categoryData.is_active;
+            if (categoryData.sort_order !== undefined) payload.sort_order = categoryData.sort_order;
+
+            const record = await pb.collection('categories').update(id, payload);
             return mapPocketbaseToCategory(record);
         } catch (error: any) {
             console.error('Error updating category:', error);

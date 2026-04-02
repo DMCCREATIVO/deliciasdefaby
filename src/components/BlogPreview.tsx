@@ -1,6 +1,5 @@
 import { useQuery } from "@tanstack/react-query";
 import { blogService } from "@/lib/database/index";
-import { BlogPost } from "@/lib/database/types";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Calendar, Clock, ArrowRight, BookOpen } from "lucide-react";
@@ -19,47 +18,7 @@ export const BlogPreview = () => {
     }
   });
 
-  // Posts de respaldo si no hay datos
-  const fallbackPosts: BlogPost[] = [
-    {
-      id: '1',
-      title: 'Los Secretos del Pan Artesanal',
-      excerpt: 'Descubre las técnicas tradicionales que hacen único nuestro pan diario.',
-      content: 'Contenido del artículo...',
-      image_url: 'https://images.unsplash.com/photo-1549931319-a545dcf3bc73?auto=format&fit=crop&w=800&q=80',
-      created_at: new Date().toISOString(),
-      slug: 'secretos-pan-artesanal',
-      is_published: true,
-      featured: false,
-      author_id: null
-    },
-    {
-      id: '2',
-      title: 'Postres de Temporada: Sabores del Otoño',
-      excerpt: 'Endulza tus días con nuestras creaciones especiales de temporada.',
-      content: 'Contenido del artículo...',
-      image_url: 'https://images.unsplash.com/photo-1578985545062-69928b1d9587?auto=format&fit=crop&w=800&q=80',
-      created_at: new Date().toISOString(),
-      slug: 'postres-temporada-otono',
-      is_published: true,
-      featured: false,
-      author_id: null
-    },
-    {
-      id: '3',
-      title: 'La Historia Detrás de Cada Receta',
-      excerpt: 'Conoce las tradiciones familiares que inspiran nuestras creaciones.',
-      content: 'Contenido del artículo...',
-      image_url: 'https://images.unsplash.com/photo-1517433670267-08bbd4be890f?auto=format&fit=crop&w=800&q=80',
-      created_at: new Date().toISOString(),
-      slug: 'historia-detras-recetas',
-      is_published: true,
-      featured: false,
-      author_id: null
-    }
-  ];
-
-  const displayPosts = posts?.length ? posts : fallbackPosts;
+  const displayPosts = posts ?? [];
 
   const calculateReadingTime = (content: string) => {
     const wordsPerMinute = 200;
@@ -94,7 +53,12 @@ export const BlogPreview = () => {
             </div>
           ) : (
             <>
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6 md:gap-8 mb-8 sm:mb-12">
+              {displayPosts.length === 0 ? (
+                <div className="text-center py-10">
+                  <p className="themed-section-subtitle">Aun no hay articulos publicados.</p>
+                </div>
+              ) : (
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6 md:gap-8 mb-8 sm:mb-12">
                 {displayPosts.map((post) => (
                   <Card
                     key={post.id}
@@ -143,6 +107,7 @@ export const BlogPreview = () => {
                   </Card>
                 ))}
               </div>
+              )}
 
               <div className="text-center">
                 <Button

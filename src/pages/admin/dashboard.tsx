@@ -148,14 +148,24 @@ export default function Dashboard() {
       }
       setError(null);
 
-      const dataPromise = Promise.all([
+      // Usar allSettled para que un error individual no destruya todo el dashboard
+      const [ordersResult, productsResult, usersResult, categoriesResult] = await Promise.allSettled([
         orderService.getAll(),
-        productService.getAll(),
+        productService.getAllAdmin(),   // getAllAdmin funciona con el usuario autenticado
         userService.getAll(),
         categoryService.getAll()
       ]);
 
-      const [orders, products, users, categories] = await dataPromise;
+      const orders   = ordersResult.status    === 'fulfilled' ? ordersResult.value    : [];
+      const products = productsResult.status  === 'fulfilled' ? productsResult.value  : [];
+      const users    = usersResult.status     === 'fulfilled' ? usersResult.value     : [];
+      const categories = categoriesResult.status === 'fulfilled' ? categoriesResult.value : [];
+
+      // Loguear qué servicios fallaron sin bloquear el dashboard
+      if (ordersResult.status    === 'rejected') console.warn('⚠️ Orders no disponible:', ordersResult.reason?.message);
+      if (productsResult.status  === 'rejected') console.warn('⚠️ Products no disponible:', productsResult.reason?.message);
+      if (usersResult.status     === 'rejected') console.warn('⚠️ Users no disponible:', usersResult.reason?.message);
+      if (categoriesResult.status === 'rejected') console.warn('⚠️ Categories no disponible:', categoriesResult.reason?.message);
 
       const now = new Date();
       const today = now.toISOString().split('T')[0];

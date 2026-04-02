@@ -39,7 +39,10 @@ export interface Order {
     contact_name?: string; // Alias for dashboard
     customer_email: string | null;
     customer_phone: string;
+    // Mantén compatibilidad con UI (dirección y teléfono del checkout)
+    contact_phone?: string;
     customer_address: string | null;
+    shipping_address?: string | null;
     status: 'pending' | 'confirmed' | 'preparing' | 'ready' | 'delivered' | 'cancelled' | 'pendiente' | 'entregado';
     payment_method: string;
     payment_status: 'pending' | 'paid' | 'failed';
@@ -61,6 +64,16 @@ export interface OrderItem {
     quantity: number;
     unit_price: number;
     total: number;
+}
+
+export interface OrderMessage {
+    id: string;
+    order_id: string;
+    channel: 'whatsapp';
+    to_phone: string | null;
+    message_text: string;
+    message_status: 'sent' | 'failed' | null;
+    created_at: string;
 }
 
 export interface User {

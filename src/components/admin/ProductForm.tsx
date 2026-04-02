@@ -147,8 +147,9 @@ export function ProductForm({ product, onSubmit, onCancel }: ProductFormProps) {
         is_active: data.is_active ?? true,
         is_featured: data.is_featured ?? false,
         image_url: imageFile ? '' : (data.image_url || ''), // si hay archivo, PocketBase generará la URL
-        _imageFile: imageFile || undefined,  // archivo imagen principal
-        _galleryFiles: galleryFiles,          // archivos galería
+        slug: product?.slug || undefined,        // preservar slug al editar; se genera automáticamente al crear
+        _imageFile: imageFile || undefined,      // archivo imagen principal
+        _galleryFiles: galleryFiles,             // archivos galería
       }
 
       await onSubmit(payload)
@@ -239,7 +240,7 @@ export function ProductForm({ product, onSubmit, onCancel }: ProductFormProps) {
                   <FormField control={form.control} name="category_id" render={({ field }) => (
                     <FormItem>
                       <FormLabel className="text-gray-700 text-sm font-medium">Categoría *</FormLabel>
-                      <Select onValueChange={field.onChange} defaultValue={field.value}>
+                      <Select onValueChange={field.onChange} value={field.value}>
                         <FormControl>
                           <SelectTrigger className="text-sm border-gray-300 focus:border-orange-500">
                             <SelectValue placeholder="Seleccionar..." />

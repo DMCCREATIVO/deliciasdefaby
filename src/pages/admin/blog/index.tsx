@@ -149,6 +149,8 @@ const BlogFormWrapper = React.memo(() => {
         alert('Post creado correctamente');
       }
 
+      // Fuerza refresh del listado admin al volver
+      window.dispatchEvent(new CustomEvent('blog:refresh'));
       navigate('/admin/blog');
     } catch (error) {
       console.error('Error al guardar post:', error);
@@ -393,7 +395,12 @@ const BlogListPage = React.memo(() => {
       try {
         setLoading(true);
         const data = await blogService.getAllAdmin();
-        setPosts(data);
+        const sorted = [...data].sort((a, b) => {
+          const aTime = new Date(a.created_at || a.updated_at || 0).getTime();
+          const bTime = new Date(b.created_at || b.updated_at || 0).getTime();
+          return bTime - aTime;
+        });
+        setPosts(sorted);
         setError(null);
       } catch (err) {
         console.error("Error al cargar posts:", err);
@@ -405,6 +412,9 @@ const BlogListPage = React.memo(() => {
     };
 
     fetchPosts();
+    const onRefresh = () => fetchPosts();
+    window.addEventListener('blog:refresh', onRefresh);
+    return () => window.removeEventListener('blog:refresh', onRefresh);
   }, []);
 
   // Filtrado de posts

@@ -1,5 +1,40 @@
 import { pb } from '../pocketbase/client';
 import type { Product, ProductService } from './types';
+import { mapPocketbaseToCategory } from './categories.pocketbase';
+
+let categoryRelationFieldsCache: string[] | null = null;
+let didLogCategoryRelationFields = false;
+
+const getCategoryRelationFields = async (): Promise<string[]> => {
+    if (categoryRelationFieldsCache) return categoryRelationFieldsCache;
+    try {
+        // En admin, el usuario suele estar autenticado y podremos leer el schema.
+        const productsCol: any = await pb.collections.getOne('products');
+        const fields: any[] = productsCol?.fields || [];
+
+        const relationFields = fields
+            .filter((f) => f?.type === 'relation')
+            .filter((f) => {
+                const collectionId = f?.options?.collectionId ?? f?.options?.collection;
+                return collectionId === 'categories';
+            })
+            .map((f) => f.name)
+            .filter(Boolean);
+
+        // Fallback por si no detecta nada (schema viejo/local)
+        const fallback = ['category_id', 'category', 'categoryId'];
+        categoryRelationFieldsCache = relationFields.length > 0 ? relationFields : fallback;
+        if (import.meta.env.DEV && !didLogCategoryRelationFields) {
+            didLogCategoryRelationFields = true;
+            console.log('🧩 Detected category relation fields:', categoryRelationFieldsCache);
+        }
+        return categoryRelationFieldsCache;
+    } catch {
+        const fallback = ['category_id', 'category', 'categoryId'];
+        categoryRelationFieldsCache = fallback;
+        return fallback;
+    }
+};
 
 // Mapear campos de PocketBase (products) a nuestra estructura de Product
 const mapPocketbaseToProduct = (record: any): Product => ({
@@ -11,7 +46,26 @@ const mapPocketbaseToProduct = (record: any): Product => ({
     compare_at_price: record.compare_at_price || null,
     weight: record.weight || null,
     stock: record.stock ?? 0,
-    category_id: record.category_id || null,
+    // Compatibilidad: tomamos la relación desde:
+    // - campo directo (category_id/category/categoryId)
+    // - o desde record.expand[*] (si PB solo trae expand).
+    category_id: (() => {
+        const direct = record.category_id ?? record.category ?? record.categoryId ?? null;
+        if (direct) {
+            if (Array.isArray(direct)) return (direct[0] ?? null) as string | null;
+            return direct as string | null;
+        }
+
+        const expandObj = record?.expand || {};
+        const expandKeys = Object.keys(expandObj);
+        for (const k of expandKeys) {
+            const expanded = expandObj[k];
+            if (!expanded) continue;
+            const v = Array.isArray(expanded) ? expanded[0] : expanded;
+            if (v?.id) return v.id as string;
+        }
+        return null;
+    })(),
     // Prioridad: image_url texto > primer archivo en images
     image_url: record.image_url ||
         (record.images && record.images.length > 0
@@ -29,21 +83,41 @@ const mapPocketbaseToProduct = (record: any): Product => ({
     available_days: record.available_days || null,
     created_at: record.created,
     updated_at: record.updated,
-    categories: record.expand?.category_id ? {
-        id: record.expand.category_id.id,
-        name: record.expand.category_id.name,
-        description: record.expand.category_id.description,
-        image: record.expand.category_id.image,
-        is_active: record.expand.category_id.is_active,
-        sort_order: record.expand.category_id.sort_order || 0,
-        slug: record.expand.category_id.slug || '',
-        created_at: record.expand.category_id.created,
-        updated_at: record.expand.category_id.updated,
-    } : undefined,
+    categories: (() => {
+        const expandObj = record?.expand || {};
+        const expandKeys = Object.keys(expandObj);
+        for (const k of expandKeys) {
+            let expanded = expandObj[k];
+            if (!expanded) continue;
+            if (Array.isArray(expanded)) expanded = expanded[0];
+            if (!expanded?.id || expanded.name === undefined) continue;
+
+            // Compatibilidad: boolean y sort_order pueden variar nombres en esquemas viejos
+            const isActive = expanded.is_active ?? expanded.isActive ?? true;
+            const sortOrder = expanded.sort_order ?? expanded.sortOrder ?? 0;
+            return {
+                id: expanded.id,
+                name: expanded.name,
+                description: expanded.description ?? null,
+                image: expanded.image ?? null,
+                is_active: isActive,
+                sort_order: sortOrder,
+                slug: expanded.slug || '',
+                created_at: expanded.created,
+                updated_at: expanded.updated,
+            };
+        }
+        return undefined;
+    })(),
 });
 
 // Construir FormData o plain object según si hay archivos
-const buildProductPayload = (productData: any): FormData | Record<string, any> => {
+const buildProductPayload = (
+    productData: any,
+    categoryField: "category_id" | "category"
+): FormData | Record<string, any> => {
+    const raw = productData.category_id ?? productData.category;
+    const categoryValue = (Array.isArray(raw) ? raw[0] : raw) || '';
     const hasFiles = productData._imageFile instanceof File ||
         (Array.isArray(productData._galleryFiles) && productData._galleryFiles.length > 0);
 
@@ -54,9 +128,11 @@ const buildProductPayload = (productData: any): FormData | Record<string, any> =
         if (productData.short_description !== undefined) fd.append('short_description', productData.short_description || '');
         if (productData.price !== undefined) fd.append('price', String(productData.price || 0));
         if (productData.stock !== undefined) fd.append('stock', String(productData.stock || 0));
-        if (productData.weight !== undefined) fd.append('weight', productData.weight || '');
-        if (productData.slug !== undefined) fd.append('slug', productData.slug || '');
-        if (productData.category_id !== undefined) fd.append('category_id', productData.category_id || '');
+        if (productData.weight !== undefined && productData.weight !== '' && productData.weight != null) {
+            const w = Number(productData.weight);
+            if (!Number.isNaN(w)) fd.append('weight', String(w));
+        }
+        fd.append(categoryField, categoryValue);
         if (productData.is_active !== undefined) fd.append('is_active', String(productData.is_active ?? true));
         if (productData.is_featured !== undefined) fd.append('is_featured', String(productData.is_featured ?? false));
         if (productData.image_url !== undefined) fd.append('image_url', productData.image_url || '');
@@ -74,46 +150,195 @@ const buildProductPayload = (productData: any): FormData | Record<string, any> =
         return fd;
     }
 
-    // Plain object sin archivos
-    return {
+    const plain: Record<string, unknown> = {
         title: productData.title,
         description: productData.description,
         short_description: productData.short_description,
         price: productData.price,
         compare_at_price: productData.compare_at_price,
-        weight: productData.weight,
         stock: productData.stock,
-        slug: productData.slug,
-        category_id: productData.category_id,
+        [categoryField]: categoryValue,
         is_active: productData.is_active,
         is_featured: productData.is_featured,
         available_days: productData.available_days,
-        image_url: productData.image_url || '',
+        image_url: clientImageUrl(productData.image_url),
     };
+    if (productData.weight !== undefined && productData.weight !== '' && productData.weight != null) {
+        const w = Number(productData.weight);
+        if (!Number.isNaN(w)) plain.weight = w;
+    }
+    return plain as Record<string, any>;
+};
+
+function clientImageUrl(url: string | undefined | null): string {
+    if (url === undefined || url === null) return '';
+    return String(url);
+}
+
+const buildProductPayloadWithBothCategories = (
+    productData: any,
+    relationFields: string[]
+): FormData | Record<string, any> => {
+    const raw = productData.category_id ?? productData.category;
+    const categoryValue = (Array.isArray(raw) ? raw[0] : raw) || '';
+    const hasFiles = productData._imageFile instanceof File ||
+        (Array.isArray(productData._galleryFiles) && productData._galleryFiles.length > 0);
+
+    if (hasFiles) {
+        const fd = new FormData();
+        if (productData.title !== undefined) fd.append('title', productData.title || '');
+        if (productData.description !== undefined) fd.append('description', productData.description || '');
+        if (productData.short_description !== undefined) fd.append('short_description', productData.short_description || '');
+        if (productData.price !== undefined) fd.append('price', String(productData.price || 0));
+        if (productData.stock !== undefined) fd.append('stock', String(productData.stock || 0));
+        if (productData.weight !== undefined && productData.weight !== '' && productData.weight != null) {
+            const w = Number(productData.weight);
+            if (!Number.isNaN(w)) fd.append('weight', String(w));
+        }
+
+        // Mandamos todos los campos de relación detectados
+        // (y además los nombres comunes) para cubrir esquemas distintos.
+        const payloadRelationFields = Array.from(new Set([...relationFields, 'category_id', 'category', 'categoryId']));
+        for (const field of payloadRelationFields) {
+            if (field) fd.append(field, categoryValue);
+        }
+
+        if (productData.is_active !== undefined) fd.append('is_active', String(productData.is_active ?? true));
+        if (productData.is_featured !== undefined) fd.append('is_featured', String(productData.is_featured ?? false));
+        if (productData.image_url !== undefined) fd.append('image_url', productData.image_url || '');
+
+        if (productData._imageFile instanceof File) fd.append('images', productData._imageFile);
+        if (Array.isArray(productData._galleryFiles)) {
+            for (const file of productData._galleryFiles) {
+                if (file instanceof File) fd.append('images', file);
+            }
+        }
+        return fd;
+    }
+
+    const payloadRelationFields = Array.from(new Set([...relationFields, 'category_id', 'category', 'categoryId']));
+    const plain: Record<string, unknown> = {
+        title: productData.title,
+        description: productData.description,
+        short_description: productData.short_description,
+        price: productData.price,
+        compare_at_price: productData.compare_at_price,
+        stock: productData.stock,
+        category_id: categoryValue,
+        category: categoryValue,
+        is_active: productData.is_active,
+        is_featured: productData.is_featured,
+        available_days: productData.available_days,
+        image_url: clientImageUrl(productData.image_url),
+    };
+
+    for (const field of payloadRelationFields) {
+        if (field) plain[field] = categoryValue;
+    }
+
+    if (productData.weight !== undefined && productData.weight !== '' && productData.weight != null) {
+        const w = Number(productData.weight);
+        if (!Number.isNaN(w)) plain.weight = w;
+    }
+
+    return plain as Record<string, any>;
 };
 
 export const pocketbaseProductService: ProductService = {
     async getAll(): Promise<Product[]> {
         try {
-            const records = await pb.collection('products').getFullList({
-                sort: 'title',
-                filter: 'is_active = true',
-                expand: 'category_id',
+            const categoryRecords = await pb.collection('categories').getFullList({ sort: 'name' });
+            const relationFields = await getCategoryRelationFields();
+
+            // listRule filtra visibilidad pública. Para que la categoría aparezca,
+            // intentamos expandir por ambas posibles nomenclaturas.
+            let records: any[] = [];
+            try {
+                records = await pb.collection('products').getFullList({
+                    sort: 'title',
+                    expand: relationFields.join(','),
+                });
+            } catch {
+                try {
+                    records = await pb.collection('products').getFullList({ sort: 'title', expand: relationFields[0] });
+                } catch {
+                    try {
+                        records = await pb.collection('products').getFullList({ sort: 'title', expand: 'category' });
+                    } catch {
+                        records = await pb.collection('products').getFullList({ sort: 'title' });
+                    }
+                }
+            }
+            const catById = new Map(categoryRecords.map((c) => [c.id, mapPocketbaseToCategory(c)]));
+            return records.map((r) => {
+                const p = mapPocketbaseToProduct(r);
+                const cid = (() => {
+                    if (p.categories?.id) return p.categories.id;
+                    for (const field of relationFields) {
+                        const cidRaw = r[field];
+                        const candidate = Array.isArray(cidRaw) ? (cidRaw[0] as string | undefined) : (cidRaw as string | undefined);
+                        if (candidate) return candidate;
+                    }
+                    return undefined;
+                })();
+                if (cid && catById.has(cid)) {
+                    return { ...p, categories: catById.get(cid)! };
+                }
+                return p;
             });
-            return records.map(mapPocketbaseToProduct);
         } catch (error: any) {
             console.error('Error fetching products:', error);
-            throw new Error(error.message || 'Error al obtener productos');
+            return [];
         }
     },
 
     async getAllAdmin(): Promise<Product[]> {
         try {
-            const records = await pb.collection('products').getFullList({
-                sort: 'title',
-                expand: 'category_id',
+            // Cargamos categorías aparte y hacemos join por id. Para evitar problemas con
+            // el nombre real del campo en PocketBase, intentamos expandir por ambas nominaciones.
+            const categoryRecords = await pb.collection('categories').getFullList({ sort: 'name' });
+            const relationFields = await getCategoryRelationFields();
+
+            let records: any[] = [];
+            try {
+                records = await pb.collection('products').getFullList({
+                    sort: 'title',
+                    expand: relationFields.join(','),
+                });
+            } catch {
+                try {
+                    records = await pb.collection('products').getFullList({ sort: 'title', expand: relationFields[0] });
+                } catch {
+                    try {
+                        records = await pb.collection('products').getFullList({ sort: 'title', expand: 'category' });
+                    } catch {
+                        records = await pb.collection('products').getFullList({ sort: 'title' });
+                    }
+                }
+            }
+
+            const catById = new Map(categoryRecords.map((c) => [c.id, mapPocketbaseToCategory(c)]));
+
+            return records.map((r: any) => {
+                const p = mapPocketbaseToProduct(r);
+
+                // Si el expand falló, categorías quedará undefined: resolvemos con join.
+                if (!p.categories) {
+                    const cid = (() => {
+                        for (const field of relationFields) {
+                            const cidRaw = r[field];
+                            const candidate = Array.isArray(cidRaw) ? (cidRaw[0] as string | undefined) : (cidRaw as string | undefined);
+                            if (candidate) return candidate;
+                        }
+                        return undefined;
+                    })();
+                    if (cid && catById.has(cid)) {
+                        return { ...p, categories: catById.get(cid)! };
+                    }
+                }
+
+                return p;
             });
-            return records.map(mapPocketbaseToProduct);
         } catch (error: any) {
             console.error('Error fetching all products (admin):', error);
             throw new Error(error.message || 'Error al obtener productos');
@@ -123,8 +348,41 @@ export const pocketbaseProductService: ProductService = {
     async getById(id: string): Promise<Product | null> {
         if (!id) throw new Error('ID es requerido');
         try {
-            const record = await pb.collection('products').getOne(id, { expand: 'category_id' });
-            return mapPocketbaseToProduct(record);
+            const categoryRecords = await pb.collection('categories').getFullList({ sort: 'name' });
+            const relationFields = await getCategoryRelationFields();
+
+            let record: any = null;
+            try {
+                record = await pb.collection('products').getOne(id, { expand: relationFields.join(',') });
+            } catch {
+                try {
+                    record = await pb.collection('products').getOne(id, { expand: relationFields[0] });
+                } catch {
+                    try {
+                        record = await pb.collection('products').getOne(id, { expand: 'category' });
+                    } catch {
+                        record = await pb.collection('products').getOne(id);
+                    }
+                }
+            }
+            const catById = new Map(categoryRecords.map((c) => [c.id, mapPocketbaseToCategory(c)]));
+
+            const p = mapPocketbaseToProduct(record);
+            if (p.categories) return p;
+
+            const cid = (() => {
+                for (const field of relationFields) {
+                    const cidRaw = record[field];
+                    const candidate = Array.isArray(cidRaw) ? (cidRaw[0] as string | undefined) : (cidRaw as string | undefined);
+                    if (candidate) return candidate;
+                }
+                return undefined;
+            })();
+            if (cid && catById.has(cid)) {
+                return { ...p, categories: catById.get(cid)! };
+            }
+
+            return p;
         } catch (error: any) {
             if (error.status === 404) return null;
             throw new Error(error.message || 'Error al obtener producto');
@@ -133,9 +391,23 @@ export const pocketbaseProductService: ProductService = {
 
     async create(productData: any): Promise<Product> {
         try {
-            const payload = buildProductPayload(productData);
-            const record = await pb.collection('products').create(payload);
-            return mapPocketbaseToProduct(record);
+            try {
+                const relationFields = await getCategoryRelationFields();
+                const payload = buildProductPayloadWithBothCategories(productData, relationFields);
+                const record = await pb.collection('products').create(payload);
+                return mapPocketbaseToProduct(record);
+            } catch (error: any) {
+                // Fallback si falla con ambos: intenta uno por uno
+                const payloadA = buildProductPayload(productData, 'category_id');
+                try {
+                    const recordA = await pb.collection('products').create(payloadA);
+                    return mapPocketbaseToProduct(recordA);
+                } catch (errorA: any) {
+                    const payloadB = buildProductPayload(productData, 'category');
+                    const recordB = await pb.collection('products').create(payloadB);
+                    return mapPocketbaseToProduct(recordB);
+                }
+            }
         } catch (error: any) {
             console.error('Error creating product:', error);
             throw new Error(error.message || 'Error al crear producto');
@@ -145,9 +417,23 @@ export const pocketbaseProductService: ProductService = {
     async update(id: string, productData: any): Promise<Product> {
         if (!id) throw new Error('ID es requerido');
         try {
-            const payload = buildProductPayload(productData);
-            const record = await pb.collection('products').update(id, payload);
-            return mapPocketbaseToProduct(record);
+            try {
+                const relationFields = await getCategoryRelationFields();
+                const payload = buildProductPayloadWithBothCategories(productData, relationFields);
+                const record = await pb.collection('products').update(id, payload);
+                return mapPocketbaseToProduct(record);
+            } catch (error: any) {
+                // Fallback si falla con ambos: intenta uno por uno
+                const payloadA = buildProductPayload(productData, 'category_id');
+                try {
+                    const recordA = await pb.collection('products').update(id, payloadA);
+                    return mapPocketbaseToProduct(recordA);
+                } catch (errorA: any) {
+                    const payloadB = buildProductPayload(productData, 'category');
+                    const recordB = await pb.collection('products').update(id, payloadB);
+                    return mapPocketbaseToProduct(recordB);
+                }
+            }
         } catch (error: any) {
             console.error('Error updating product:', error);
             throw new Error(error.message || 'Error al actualizar producto');
@@ -174,6 +460,10 @@ export const pocketbaseProductService: ProductService = {
             }
             await pb.collection('products').delete(id);
         } catch (error: any) {
+            // Si el producto ya no existe, considerarlo eliminado exitosamente
+            if (error.status === 404 || error.message?.includes("wasn't found") || error.message?.includes("not found")) {
+                return;
+            }
             throw new Error(error.message || 'Error al eliminar producto');
         }
     },

@@ -42,11 +42,9 @@ export const ProductCatalog = () => {
           );
         }
 
-        // Filtrar por categoría
-        if (filters.category && filtered[0]?.categories) {
-          filtered = filtered.filter(p =>
-            p.categories?.name === filters.category
-          );
+        // Filtrar por categoría (nombre; categories viene enriquecido en productService.getAll)
+        if (filters.category) {
+          filtered = filtered.filter(p => p.categories?.name === filters.category);
         }
 
         // Filtrar por precio mínimo

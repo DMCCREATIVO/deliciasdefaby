@@ -28,6 +28,12 @@ async function setupDatabase() {
             required: false
           },
           {
+            name: 'slug',
+            type: 'text',
+            required: false,
+            options: { max: 120 }
+          },
+          {
             name: 'image',
             type: 'file',
             required: false

@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Card } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
@@ -42,6 +42,7 @@ import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { db, type Product } from "@/lib/database";
 import type { ProductFormValues } from "@/lib/validations/product";
 import { formatCLP } from "@/utils/currency";
+import { pb } from "@/lib/pocketbase/client";
 
 export default function ProductsPage() {
   const [searchTerm, setSearchTerm] = useState("");
@@ -50,6 +51,27 @@ export default function ProductsPage() {
   const [deleteProductId, setDeleteProductId] = useState<string | null>(null);
 
   const queryClient = useQueryClient();
+
+  // Debug: inspecciona el schema real de PocketBase con la sesión actual.
+  // Esto nos dirá el nombre exacto del campo de relación para categorías.
+  useEffect(() => {
+    if (!import.meta.env.DEV) return;
+    if (!pb.authStore.isValid) return;
+
+    (async () => {
+      try {
+        const productsCol: any = await pb.collections.getOne("products");
+        const fields = (productsCol?.fields || []).map((f: any) => ({
+          name: f.name,
+          type: f.type,
+          relation: f.options?.collectionId || f.options?.collection || null,
+        }));
+        console.log("🧩 PocketBase schema(products) fields:", fields);
+      } catch (e) {
+        console.error("No se pudo leer schema de PocketBase (products):", e);
+      }
+    })();
+  }, []);
 
   const { data: products = [], isLoading } = useQuery({
     queryKey: ["products-admin"],
@@ -102,7 +124,14 @@ export default function ProductsPage() {
     },
     onError: (error: Error) => {
       console.error("🚨 Error en mutación de actualización:", error);
-      toast.error(`Error al actualizar producto: ${error.message}`);
+      // Si el producto ya no existe en la BD, refrescar la lista y cerrar el formulario
+      if (error.message?.includes("wasn't found") || error.message?.includes("not found") || error.message?.includes("404")) {
+        toast.error("Este producto ya no existe en la base de datos. La lista se ha actualizado.");
+        queryClient.invalidateQueries({ queryKey: ["products-admin"] });
+        handleCloseDialog();
+      } else {
+        toast.error(`Error al actualizar producto: ${error.message}`);
+      }
     },
   });
 
@@ -335,7 +364,14 @@ export default function ProductsPage() {
                           </div>
                         </TableCell>
                         <TableCell className="admin-table-cell-muted">
-                          {product.categories?.name || "Sin categoría"}
+                          <div className="flex flex-col">
+                            <span>{product.categories?.name || "Sin categoría"}</span>
+                            {!product.categories?.name && product.category_id && (
+                              <span className="text-[10px] text-zinc-500">
+                                category_id: {product.category_id}
+                              </span>
+                            )}
+                          </div>
                         </TableCell>
                         <TableCell className="admin-table-cell-muted">
                           <span className="font-bold admin-text-accent">{formatCLP(product.price)}</span>
@@ -427,7 +463,14 @@ export default function ProductsPage() {
                     <div className="mt-3 grid grid-cols-2 gap-3">
                       <div className="space-y-1">
                         <p className="text-xs admin-text-muted">Categoría</p>
-                        <p className="text-sm admin-text-primary">{product.categories?.name || "Sin categoría"}</p>
+                        <p className="text-sm admin-text-primary">
+                          {product.categories?.name || "Sin categoría"}
+                        </p>
+                        {!product.categories?.name && product.category_id && (
+                          <p className="text-[10px] text-zinc-500 break-all">
+                            category_id: {product.category_id}
+                          </p>
+                        )}
                       </div>
                       <div className="space-y-1">
                         <p className="text-xs admin-text-muted">Precio</p>
@@ -462,7 +505,13 @@ export default function ProductsPage() {
       </div>
 
       {/* Modal de formulario */}
-      <Dialog open={isFormOpen} onOpenChange={setIsFormOpen}>
+      <Dialog
+        open={isFormOpen}
+        onOpenChange={(open) => {
+          setIsFormOpen(open);
+          if (!open) setSelectedProduct(null);
+        }}
+      >
         <DialogContent className="w-[95vw] max-w-[900px] h-[95vh] max-h-[95vh] flex flex-col p-0 gap-0">
           <DialogHeader className="border-b border-[var(--theme-card-border)] p-4 sm:p-6 flex-shrink-0">
             <DialogTitle className="admin-dialog-title text-lg sm:text-xl font-semibold">
@@ -471,6 +520,7 @@ export default function ProductsPage() {
           </DialogHeader>
           <div className="flex-1 min-h-0 p-4 sm:p-6">
             <ProductForm
+              key={selectedProduct?.id ?? "new"}
               product={selectedProduct}
               onSubmit={handleSubmit}
               onCancel={handleCloseDialog}

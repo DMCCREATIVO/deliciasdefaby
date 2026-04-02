@@ -6,6 +6,7 @@ import { createProductsCollection } from './collections/products';
 import { createOrdersCollection } from './collections/orders';
 import { createSettingsCollection } from './collections/settings';
 import { createCategoriesCollection } from './collections/categories';
+import { createOrderMessagesCollection } from './collections/order_messages';
 
 const COLLECTION_DELAY = 3000; // 3 segundos entre colecciones
 
@@ -26,6 +27,7 @@ export const initializeDatabase = async () => {
       { name: 'categories', fn: createCategoriesCollection },
       { name: 'products', fn: createProductsCollection },
       { name: 'orders', fn: createOrdersCollection },
+      { name: 'order_messages', fn: createOrderMessagesCollection },
       { name: 'settings', fn: createSettingsCollection }
     ];
 

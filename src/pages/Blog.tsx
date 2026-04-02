@@ -1,9 +1,7 @@
 import { motion } from "framer-motion";
 import { ChevronDown, FileText, BookOpen, Calendar, User } from "lucide-react";
-import { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { blogService } from "@/lib/database/index";
-import { BlogPost } from "@/lib/database/types";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
@@ -28,52 +26,7 @@ export default function BlogPage() {
     }
   });
 
-  // Posts de respaldo si hay error o no hay datos
-  const fallbackPosts: BlogPost[] = [
-    {
-      id: '1',
-      title: 'Los Secretos del Pan Artesanal',
-      excerpt: 'Descubre las técnicas tradicionales que hacen único nuestro pan diario.',
-      content: 'Contenido del artículo sobre técnicas de panadería...',
-      image_url: 'https://images.unsplash.com/photo-1549931319-a545dcf3bc73?auto=format&fit=crop&w=1200&q=80',
-      created_at: new Date().toISOString(),
-      slug: 'secretos-pan-artesanal',
-      is_published: true,
-      featured: true
-    },
-    {
-      id: '2',
-      title: 'Postres de Temporada: Sabores del Otoño',
-      excerpt: 'Endulza tus días con nuestras creaciones especiales de temporada.',
-      content: 'Contenido sobre postres de temporada...',
-      image_url: 'https://images.unsplash.com/photo-1578985545062-69928b1d9587?auto=format&fit=crop&w=1200&q=80',
-      created_at: new Date().toISOString(),
-      slug: 'postres-temporada-otono',
-      is_published: true
-    },
-    {
-      id: '3',
-      title: 'La Historia Detrás de Cada Receta',
-      excerpt: 'Conoce las tradiciones familiares que inspiran nuestras creaciones.',
-      content: 'Historia y tradiciones de nuestras recetas...',
-      image_url: 'https://images.unsplash.com/photo-1517433670267-08bbd4be890f?auto=format&fit=crop&w=1200&q=80',
-      created_at: new Date().toISOString(),
-      slug: 'historia-detras-recetas',
-      is_published: true
-    },
-    {
-      id: '4',
-      title: 'Técnicas de Decoración de Pasteles',
-      excerpt: 'Aprende a decorar pasteles como un profesional con nuestros consejos.',
-      content: 'Guía completa de decoración de pasteles...',
-      image_url: 'https://images.unsplash.com/photo-1621303837174-89787a7d4729?auto=format&fit=crop&w=1200&q=80',
-      created_at: new Date().toISOString(),
-      slug: 'tecnicas-decoracion-pasteles',
-      is_published: true
-    }
-  ];
-
-  const displayPosts = posts?.length ? posts : fallbackPosts;
+  const displayPosts = posts ?? [];
 
   // Obtener el post destacado o el más reciente para el hero
   const featuredPost = displayPosts.find(post => post.featured) || displayPosts[0];

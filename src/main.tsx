@@ -5,6 +5,8 @@ import './index.css';
 import './styles/themes.css';
 import './styles/admin-override.css';
 import { pb } from './lib/pocketbase/client';
+import { checkCollection } from './lib/pocketbase/utils/checkCollection';
+import { createOrderMessagesCollection } from './lib/pocketbase/collections/order_messages';
 
 console.log('🚀 Iniciando la aplicación...');
 console.log('📊 Verificando variables de entorno:');
@@ -73,6 +75,16 @@ const initializeApp = async () => {
 
     // Inicializar PocketBase
     await initializePocketBase();
+
+    // Asegurar colección de historial de mensajes (para Admin → Pedidos)
+    try {
+      const exists = await checkCollection('order_messages');
+      if (!exists && pb.authStore.isValid) {
+        await createOrderMessagesCollection();
+      }
+    } catch (e) {
+      console.error('Error asegurando colección order_messages:', e);
+    }
 
     ReactDOM.createRoot(document.getElementById('root')!).render(
       <React.StrictMode>

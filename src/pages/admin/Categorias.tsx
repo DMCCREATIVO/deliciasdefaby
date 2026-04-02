@@ -92,7 +92,7 @@ const Categorias = () => {
     },
     onError: (error: Error) => {
       console.error("Error deleting category:", error);
-      toast.error("Error al eliminar la categoría");
+      toast.error(error.message || "Error al eliminar la categoría");
     },
   });
 
@@ -139,7 +139,10 @@ const Categorias = () => {
           </p>
         </div>
         <Button
-          onClick={() => setIsOpen(true)}
+          onClick={() => {
+            setSelectedCategory(null);
+            setIsOpen(true);
+          }}
           className="bg-orange-500 hover:bg-orange-600 text-white"
         >
           <Plus className="h-4 w-4 mr-2" />
@@ -226,7 +229,13 @@ const Categorias = () => {
         </div>
       </div>
 
-      <Dialog open={isOpen} onOpenChange={setIsOpen}>
+      <Dialog
+        open={isOpen}
+        onOpenChange={(open) => {
+          setIsOpen(open);
+          if (!open) setSelectedCategory(null);
+        }}
+      >
         <DialogContent className="bg-zinc-900 text-zinc-200 border border-zinc-800 sm:max-w-[500px]">
           <DialogHeader>
             <DialogTitle>
@@ -234,6 +243,7 @@ const Categorias = () => {
             </DialogTitle>
           </DialogHeader>
           <CategoryForm
+            key={selectedCategory?.id ?? "new"}
             category={selectedCategory}
             onSubmit={handleSubmit}
             onCancel={handleCloseDialog}

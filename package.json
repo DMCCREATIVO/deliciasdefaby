@@ -5,11 +5,17 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
+    "dev:prod": "./set-env.sh prod && vite",
     "build": "vite build",
+    "build:prod": "./set-env.sh prod && vite build",
     "build:dev": "vite build --mode development",
+    "start:prod": "./set-env.sh prod && npm run preview",
+    "start": "npm run preview",
     "lint": "eslint .",
     "preview": "vite preview",
-    "setup-db": "node setup-pocketbase.js"
+    "setup-db": "node setup-pocketbase.js",
+    "env:prod": "./set-env.sh prod",
+    "env:dev": "./set-env.sh dev"
   },
   "dependencies": {
     "@hookform/resolvers": "^3.9.0",

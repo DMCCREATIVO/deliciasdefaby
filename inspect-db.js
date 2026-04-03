@@ -2,7 +2,7 @@ import PocketBase from 'pocketbase';
 import fetch from 'node-fetch';
 
 // global.fetch is needed for older Node versions or simply use built-in fetch if Node >= 18
-const pb = new PocketBase('https://clientes-pocketbasedeliciasdefaby.4dgggl.easypanel.host');
+const pb = new PocketBase('https://bd.deliciasdefaby.cl');
 pb.autoCancellation(false);
 
 async function inspect() {

@@ -1,7 +1,7 @@
 // Script para agregar productos de ejemplo a PocketBase
 import fetch from 'node-fetch';
 
-const POCKETBASE_URL = 'https://clientes-pocketbasedeliciasdefaby.4dgggl.easypanel.host';
+const POCKETBASE_URL = 'https://bd.deliciasdefaby.cl';
 
 const sampleProducts = [
   {

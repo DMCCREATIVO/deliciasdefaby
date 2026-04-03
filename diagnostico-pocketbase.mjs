@@ -3,7 +3,7 @@
 // Script de diagnóstico de conexión a PocketBase
 import PocketBase from 'pocketbase';
 
-const POCKETBASE_URL = 'https://clientes-pocketbasedeliciasdefaby.4dgggl.easypanel.host';
+const POCKETBASE_URL = 'https://bd.deliciasdefaby.cl';
 
 console.log('━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━');
 console.log('🔍 DIAGNÓSTICO DE CONEXIÓN A POCKETBASE');

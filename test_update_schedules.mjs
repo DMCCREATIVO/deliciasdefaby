@@ -1,5 +1,5 @@
 import PocketBase from 'pocketbase';
-const pb = new PocketBase('https://clientes-pocketbasedeliciasdefaby.4dgggl.easypanel.host');
+const pb = new PocketBase('https://bd.deliciasdefaby.cl');
 async function main() {
     try {
         const records = await pb.collection('delivery_schedules').getFullList();

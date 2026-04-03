@@ -1,7 +1,7 @@
 // Script para verificar y crear productos de ejemplo en PocketBase
 import fetch from 'node-fetch';
 
-const POCKETBASE_URL = 'https://clientes-pocketbasedeliciasdefaby.4dgggl.easypanel.host';
+const POCKETBASE_URL = 'https://bd.deliciasdefaby.cl';
 
 async function checkAndCreateProducts() {
   try {

@@ -1,7 +1,7 @@
 /**
  * Script para marcar productos como DESTACADOS (is_featured = true)
  */
-const BASE_URL = 'https://clientes-pocketbasedeliciasdefaby.4dgggl.easypanel.host';
+const BASE_URL = 'https://bd.deliciasdefaby.cl';
 const email = 'dmccreativo@gmail.com';
 const password = 'Dayn2614@#@';
 

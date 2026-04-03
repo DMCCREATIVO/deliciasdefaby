@@ -1,4 +1,5 @@
 import { pb } from '../pocketbase/client';
+import { authenticateAsAdmin } from '../pocketbase/configurable-admin-auth';
 import type { Product, ProductService } from './types';
 import { mapPocketbaseToCategory } from './categories.pocketbase';
 
@@ -391,6 +392,9 @@ export const pocketbaseProductService: ProductService = {
 
     async create(productData: any): Promise<Product> {
         try {
+            // Autenticar como administrador para crear productos
+            await authenticateAsAdmin();
+            
             try {
                 const relationFields = await getCategoryRelationFields();
                 const payload = buildProductPayloadWithBothCategories(productData, relationFields);
@@ -452,18 +456,40 @@ export const pocketbaseProductService: ProductService = {
     async hardDelete(id: string): Promise<void> {
         if (!id) throw new Error('ID es requerido');
         try {
+            // Autenticar como administrador para eliminar productos
+            await authenticateAsAdmin();
+            
+            // Verificar si el producto existe antes de intentar eliminar
+            try {
+                const product = await pb.collection('products').getOne(id);
+                console.log(`📦 Producto encontrado: ${product.title} (${product.id})`);
+            } catch (getError) {
+                if (getError.status === 404) {
+                    console.log(`ℹ️ Producto ${id} ya no existe en la base de datos`);
+                    return;
+                }
+                throw getError;
+            }
+            
+            // Verificar si hay pedidos asociados
             const orderItems = await pb.collection('order_items').getList(1, 1, {
                 filter: `product_id = "${id}"`,
             });
             if (orderItems.totalItems > 0) {
                 throw new Error('No se puede eliminar: el producto tiene pedidos asociados.');
             }
+            
+            // Eliminar el producto
             await pb.collection('products').delete(id);
+            console.log(`✅ Producto ${id} eliminado exitosamente`);
+            
         } catch (error: any) {
             // Si el producto ya no existe, considerarlo eliminado exitosamente
             if (error.status === 404 || error.message?.includes("wasn't found") || error.message?.includes("not found")) {
+                console.log(`ℹ️ Producto ${id} ya no existe en la base de datos`);
                 return;
             }
+            console.error('Error en hardDelete:', error);
             throw new Error(error.message || 'Error al eliminar producto');
         }
     },

@@ -64,27 +64,15 @@ const mapPbToBlogPost = (record: any) => ({
 export const pocketbaseBlogService = {
     async getAll(): Promise<any[]> {
         try {
-            const attempts = [
-                { sort: '-created', filter: 'is_published = true' },
-                { sort: '-created', filter: 'published = true' },
-                { sort: '-created', filter: 'status = "published"' },
-                { sort: '-created' as const },
-            ];
-
-            for (const params of attempts) {
-                try {
-                    const records = await pb.collection('blog_posts').getFullList(params as any);
-                    // Si no hay filtro, aplicar filtro de publicados en cliente
-                    if (!('filter' in params)) {
-                        const mapped = records.map(mapPbToBlogPost);
-                        return mapped.filter((p) => p.is_published || p.status === 'published');
-                    }
-                    return records.map(mapPbToBlogPost);
-                } catch {
-                    // probar siguiente estrategia
-                }
-            }
-            return [];
+            // Obtener posts sin filtros complejos que causan errores
+            const records = await pb.collection('blog_posts').getFullList();
+            const mapped = records.map(mapPbToBlogPost);
+            // Filtrar solo publicados en el cliente
+            return mapped.filter((p) => p.is_published).sort((a, b) => {
+                const dateA = new Date(a.created_at || 0).getTime();
+                const dateB = new Date(b.created_at || 0).getTime();
+                return dateB - dateA; // Orden descendente
+            });
         } catch (error: any) {
             console.error('Error fetching blog posts:', error);
             return [];
@@ -93,20 +81,13 @@ export const pocketbaseBlogService = {
 
     async getAllAdmin(): Promise<any[]> {
         try {
-            // Admin: sin filtro (para ver borradores y publicados)
-            const attempts = [
-                { sort: '-created' as const },
-                {},
-            ];
-            for (const params of attempts) {
-                try {
-                    const records = await pb.collection('blog_posts').getFullList(params as any);
-                    return records.map(mapPbToBlogPost);
-                } catch {
-                    // intentar siguiente
-                }
-            }
-            return [];
+            // Admin: obtener todos y ordenar en cliente
+            const records = await pb.collection('blog_posts').getFullList();
+            return records.map(mapPbToBlogPost).sort((a, b) => {
+                const dateA = new Date(a.created_at || 0).getTime();
+                const dateB = new Date(b.created_at || 0).getTime();
+                return dateB - dateA; // Orden descendente
+            });
         } catch (error: any) {
             console.error('Error fetching admin blog posts:', error);
             return [];

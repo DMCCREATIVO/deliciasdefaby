@@ -47,17 +47,25 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
       return adminStatusCache.current.get(userId) || false;
     }
 
-    const cachedResult = adminStatusCache.current.get(userId);
-    const lastCheck = lastCheckTime.current.get(userId) || 0;
     const now = Date.now();
-
-    if (cachedResult !== undefined && (now - lastCheck) < CACHE_DURATION) {
-      return cachedResult;
+    const lastCheck = lastCheckTime.current.get(userId) || 0;
+    
+    // Usar caché por 5 minutos
+    if (now - lastCheck < CACHE_DURATION) {
+      return adminStatusCache.current.get(userId) || false;
     }
 
     isCheckingAdmin.current = true;
 
     try {
+      // Primero verificar si estamos autenticados como administrador de PocketBase
+      if (pb.authStore.isAdmin) {
+        console.log('[Auth] Usuario es administrador de PocketBase');
+        adminStatusCache.current.set(userId, true);
+        lastCheckTime.current.set(userId, now);
+        return true;
+      }
+
       // El campo 'role' está en la colección 'users' (no en 'profiles')
       // Primero verificar el modelo en cache del authStore
       const model = pb.authStore.model;
@@ -69,15 +77,23 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
       }
 
       // Si no está en caché, consultar directamente
-      const userData = await pb.collection('users').getOne(userId);
-      const isAdmin = userData?.role === 'admin';
+      try {
+        const userData = await pb.collection('users').getOne(userId);
+        const isAdmin = userData?.role === 'admin';
 
-      adminStatusCache.current.set(userId, isAdmin);
-      lastCheckTime.current.set(userId, now);
-      return isAdmin;
-    } catch (error) {
-      console.error('[Auth] Error al obtener rol del usuario:', error);
-      return false;
+        adminStatusCache.current.set(userId, isAdmin);
+        lastCheckTime.current.set(userId, now);
+        return isAdmin;
+      } catch (error: any) {
+        if (error.status === 404) {
+          console.log('[Auth] Usuario no encontrado, posible eliminación o cambio de ID');
+          adminStatusCache.current.set(userId, false);
+          lastCheckTime.current.set(userId, now);
+          return false;
+        }
+        console.error('[Auth] Error al obtener rol del usuario:', error);
+        return false;
+      }
     } finally {
       isCheckingAdmin.current = false;
     }
@@ -132,6 +148,21 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     // Suscribirse a cambios en la autenticación de PocketBase
     const unsubscribe = pb.authStore.onChange((token, model) => {
       if (mounted) {
+        // Si el modelo es nulo (logout), limpiar estado
+        if (!model) {
+          setUser(null);
+          setIsAdmin(false);
+          setIsLoading(false);
+          return;
+        }
+        
+        // Si ya estamos autenticados como admin y el modelo es el mismo, no hacer nada
+        if (user && model && user.id === model.id && isAdmin) {
+          console.log('[Auth] Mismo usuario admin, sin cambios');
+          return;
+        }
+        
+        // Solo actualizar si realmente hay cambios
         setIsLoading(true);
         updateAuthState(model);
       }

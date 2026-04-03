@@ -1,6 +1,6 @@
 import PocketBase from 'pocketbase';
 
-const BASE_URL = 'https://clientes-pocketbasedeliciasdefaby.4dgggl.easypanel.host';
+const BASE_URL = 'https://bd.deliciasdefaby.cl';
 const email = process.argv[2];
 const password = process.argv[3];
 

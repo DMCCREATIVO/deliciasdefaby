@@ -21,7 +21,7 @@ echo "━━━━━━━━━━━━━━━━━━━━━━━━�
 echo "" | tee -a "$LOG_FILE"
 echo "📍 Directorio: $(pwd)" | tee -a "$LOG_FILE"
 echo "🔌 Backend: PocketBase" | tee -a "$LOG_FILE"
-echo "🌐 URL PocketBase: https://clientes-pocketbasedeliciasdefaby.4dgggl.easypanel.host" | tee -a "$LOG_FILE"
+echo "🌐 URL PocketBase: https://bd.deliciasdefaby.cl" | tee -a "$LOG_FILE"
 echo "🚪 Puerto: 3000" | tee -a "$LOG_FILE"
 echo "" | tee -a "$LOG_FILE"
 echo "⏳ Iniciando servidor..." | tee -a "$LOG_FILE"

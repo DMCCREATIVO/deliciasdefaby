@@ -7,7 +7,7 @@
 
 import PocketBase from 'pocketbase';
 
-const POCKETBASE_URL = 'https://clientes-pocketbasedeliciasdefaby.4dgggl.easypanel.host';
+const POCKETBASE_URL = 'https://bd.deliciasdefaby.cl';
 
 async function main() {
     const pb = new PocketBase(POCKETBASE_URL);

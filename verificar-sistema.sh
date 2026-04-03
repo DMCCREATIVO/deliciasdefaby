@@ -5,7 +5,7 @@ echo ""
 
 # Verificar PocketBase
 echo "📦 PocketBase:"
-POCKETBASE_URL="https://clientes-pocketbasedeliciasdefaby.4dgggl.easypanel.host"
+POCKETBASE_URL="https://bd.deliciasdefaby.cl"
 if curl -s -f "$POCKETBASE_URL/api/health" > /dev/null 2>&1; then
     echo "  ✅ PocketBase está funcionando: $POCKETBASE_URL"
 else

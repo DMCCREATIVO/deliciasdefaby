@@ -19,7 +19,7 @@ echo "━━━━━━━━━━━━━━━━━━━━━━━━�
 echo ""
 echo "📍 Directorio: $(pwd)"
 echo "🔌 Backend: PocketBase"
-echo "🌐 URL PocketBase: https://clientes-pocketbasedeliciasdefaby.4dgggl.easypanel.host"
+echo "🌐 URL PocketBase: https://bd.deliciasdefaby.cl"
 echo ""
 echo "⏳ Iniciando servidor..."
 echo ""
